@@ -121,7 +121,7 @@
 <body class="min-h-screen flex flex-col">
 
   <!-- ==================== 1. MÀN HÌNH CHÀO MỪNG & ĐĂNG NHẬP SĐT ==================== -->
-  <section id="authGateScreen" class="flex-1 flex flex-col items-center justify-center px-4 py-12 relative overflow-hidden bg-white hidden">
+  <section id="authGateScreen" class="flex-1 flex flex-col items-center justify-center px-4 py-12 relative overflow-hidden bg-white">
     <div class="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 w-[620px] h-[360px] rounded-full bg-gradient-to-tr from-indigo-100/70 via-sky-100/50 to-pink-100/50 blur-3xl"></div>
 
     <div class="relative z-10 max-w-xl w-full text-center space-y-8 animate-fade-up">
@@ -154,7 +154,7 @@
         </div>
 
         <form onsubmit="handlePhoneLogin(event)" class="space-y-3">
-          <input id="loginPhoneInput" type="tel" required="" placeholder="Nhập số điện thoại (VD: 09...)" class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <input id="loginPhoneInput" type="tel" required placeholder="Nhập số điện thoại (VD: 09...)" class="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
           <div id="loginErrorMsg" class="hidden text-xs font-medium text-rose-600 bg-rose-50 border border-rose-200 rounded-lg px-3 py-2"></div>
           <button type="submit" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm transition shadow-sm">
             Vào HungStudy →
@@ -169,7 +169,7 @@
   </section>
 
   <!-- ==================== 2. ỨNG DỤNG CHÍNH ==================== -->
-  <div id="mainAppShell" class="min-h-screen flex flex-col">
+  <div id="mainAppShell" class="min-h-screen flex flex-col hidden">
 
     <!-- NAVBAR -->
     <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200">
@@ -180,12 +180,12 @@
           </div>
           <div>
             <div class="font-bold text-slate-900 text-sm sm:text-base leading-tight">HungStudy</div>
-            <div class="hidden sm:block text-[11px] text-slate-500">Học tập &amp; Luyện tập</div>
+            <div class="hidden sm:block text-[11px] text-slate-500">Học tập & Luyện tập</div>
           </div>
         </button>
 
         <div class="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-          <div id="roleSwitcherWrap" class="items-center bg-slate-100 p-0.5 sm:p-1 rounded-xl border border-slate-200 flex">
+          <div id="roleSwitcherWrap" class="hidden items-center bg-slate-100 p-0.5 sm:p-1 rounded-xl border border-slate-200">
             <button id="btnRoleStudent" onclick="switchRole('student')" class="px-2.5 sm:px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white text-indigo-600 shadow-sm transition-all whitespace-nowrap">
               Học sinh
             </button>
@@ -195,7 +195,7 @@
           </div>
 
           <div class="flex items-center gap-1.5 sm:gap-2 pl-1.5 sm:pl-2 border-l border-slate-200">
-            <span id="currentUserBadge" class="hidden md:inline-block text-xs font-medium text-slate-600 bg-slate-100 px-2.5 py-1 rounded-lg">👑 Thầy Hùng (0838600276)</span>
+            <span id="currentUserBadge" class="hidden md:inline-block text-xs font-medium text-slate-600 bg-slate-100 px-2.5 py-1 rounded-lg"></span>
             <button onclick="logoutPhone()" class="px-2 sm:px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition whitespace-nowrap">
               Thoát
             </button>
@@ -207,7 +207,7 @@
     <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-6 sm:py-8">
 
       <!-- ==================== STUDENT VIEW ==================== -->
-      <section id="studentView" class="">
+      <section id="studentView">
         <div id="studentCourseDirectory" class="space-y-6">
           <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
@@ -216,46 +216,7 @@
             </div>
             <input id="courseSearchInput" type="text" placeholder="Tìm tên học sinh / môn..." oninput="renderStudentDirectory()" class="w-full sm:w-64 px-3.5 py-2 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
           </div>
-          <div id="courseCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div onclick="openCourseFromDirectory('course-vy')" class="group cursor-pointer bg-white rounded-2xl border border-slate-200 hover:border-indigo-400 p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-4">
-            <div class="space-y-2">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700">🔓 Đã mở khóa</span>
-                <span class="text-xs text-slate-400">2 thư mục lý thuyết</span>
-              </div>
-              <h3 class="font-bold text-slate-900 text-base group-hover:text-indigo-600 transition">Hoàng Lê Vy - Toán 11</h3>
-            </div>
-            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-indigo-600">
-              <span>Vào lớp học</span><span class="group-hover:translate-x-1 transition-transform">→</span>
-            </div>
-          </div>
-        
-          <div onclick="openCourseFromDirectory('course-1794891429430')" class="group cursor-pointer bg-white rounded-2xl border border-slate-200 hover:border-indigo-400 p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-4">
-            <div class="space-y-2">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">🔒 Cần mã 4 số</span>
-                <span class="text-xs text-slate-400">1 thư mục lý thuyết</span>
-              </div>
-              <h3 class="font-bold text-slate-900 text-base group-hover:text-indigo-600 transition">Bùi Nhật Minh - Vật Lý 10</h3>
-            </div>
-            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-indigo-600">
-              <span>Nhập mã 4 số</span><span class="group-hover:translate-x-1 transition-transform">→</span>
-            </div>
-          </div>
-        
-          <div onclick="openCourseFromDirectory('course-1794895945818')" class="group cursor-pointer bg-white rounded-2xl border border-slate-200 hover:border-indigo-400 p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-4">
-            <div class="space-y-2">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700">🔓 Đã mở khóa</span>
-                <span class="text-xs text-slate-400">1 thư mục lý thuyết</span>
-              </div>
-              <h3 class="font-bold text-slate-900 text-base group-hover:text-indigo-600 transition">Phan Đăng Ngọc Linh - Toán 12 TSA</h3>
-            </div>
-            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-indigo-600">
-              <span>Vào lớp học</span><span class="group-hover:translate-x-1 transition-transform">→</span>
-            </div>
-          </div>
-        </div>
+          <div id="courseCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </div>
 
         <div id="studentCourseWorkspace" class="space-y-6 hidden">
@@ -266,7 +227,7 @@
                 <button onclick="goHomeCourses()" class="text-xs font-semibold text-slate-500 hover:text-indigo-600 mb-2 inline-block">
                   ← Danh sách khóa học
                 </button>
-                <h1 id="hubCourseName" class="text-xl sm:text-2xl font-bold text-slate-900">Phan Đăng Ngọc Linh - Toán 12 TSA</h1>
+                <h1 id="hubCourseName" class="text-xl sm:text-2xl font-bold text-slate-900"></h1>
                 <p class="text-sm text-slate-500 mt-1">Chọn một trong 3 phần riêng biệt dưới đây để bắt đầu.</p>
               </div>
               <button onclick="lockCurrentCourse()" class="px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-medium text-slate-500 hover:text-rose-600 hover:border-rose-200">
@@ -280,11 +241,11 @@
                   <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl">📖</div>
                   <div>
                     <h2 class="text-lg font-bold text-slate-900 group-hover:text-indigo-600 transition">1. Học lý thuyết</h2>
-                    <p class="text-sm text-slate-500 mt-1">Đề cương theo từng thư mục bài học, công thức toán &amp; Flashcard ghi nhớ.</p>
+                    <p class="text-sm text-slate-500 mt-1">Đề cương theo từng thư mục bài học, công thức toán & Flashcard ghi nhớ.</p>
                   </div>
                 </div>
                 <div class="text-xs font-semibold text-indigo-600 flex items-center justify-between pt-3 border-t border-slate-100">
-                  <span id="hubTheoryCount">1 thư mục bài học</span>
+                  <span id="hubTheoryCount"></span>
                   <span class="group-hover:translate-x-1 transition-transform">Mở ngay →</span>
                 </div>
               </button>
@@ -298,7 +259,7 @@
                   </div>
                 </div>
                 <div class="text-xs font-semibold text-amber-600 flex items-center justify-between pt-3 border-t border-slate-100">
-                  <span id="hubDocsCount">0 thư mục &amp; tài liệu</span>
+                  <span id="hubDocsCount"></span>
                   <span class="group-hover:translate-x-1 transition-transform">Mở kho tài liệu →</span>
                 </div>
               </button>
@@ -312,7 +273,7 @@
                   </div>
                 </div>
                 <div class="text-xs font-semibold text-emerald-600 flex items-center justify-between pt-3 border-t border-slate-100">
-                  <span id="hubPracticeCount">2 chủ đề luyện tập</span>
+                  <span id="hubPracticeCount"></span>
                   <span class="group-hover:translate-x-1 transition-transform">Bắt đầu luyện →</span>
                 </div>
               </button>
@@ -402,11 +363,11 @@
                   <span id="practiceBackBtnLabel">← Quay lại menu khóa học</span>
                 </button>
                 <div>
-                  <div id="practiceCourseTitle" class="text-xs text-slate-400 font-medium">Phan Đăng Ngọc Linh - Toán 12 TSA</div>
+                  <div id="practiceCourseTitle" class="text-xs text-slate-400 font-medium"></div>
                   <h2 id="practiceHeaderTitle" class="text-base sm:text-lg font-bold text-slate-900">Luyện tập — Chọn chế độ</h2>
                 </div>
               </div>
-              <div id="quizScoreBadge" class="text-xs sm:text-sm font-semibold px-3.5 py-1.5 rounded-full bg-indigo-50 text-indigo-700 hidden">Đúng: 0 / 10</div>
+              <div id="quizScoreBadge" class="text-xs sm:text-sm font-semibold px-3.5 py-1.5 rounded-full bg-indigo-50 text-indigo-700 hidden">Đúng: 0 / 0</div>
             </div>
 
             <div id="practiceModeSelector" class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -419,266 +380,69 @@
                 <div class="text-xs font-semibold text-indigo-600 pt-2">Chọn chủ đề →</div>
               </button>
 
-              <button onclick="startMixedQuiz()" class="group text-left bg-white rounded-2xl border-2 border-slate-200 hover:border-emerald-500 p-6 shadow-sm hover:shadow-md transition-all space-y-3">
+              <button onclick="openMixedQuizSetup()" class="group text-left bg-white rounded-2xl border-2 border-slate-200 hover:border-emerald-500 p-6 shadow-sm hover:shadow-md transition-all space-y-3">
                 <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl">🔀</div>
                 <div>
                   <h3 class="text-lg font-bold text-slate-900 group-hover:text-emerald-600">Trộn bài tổng hợp</h3>
-                  <p class="text-sm text-slate-500 mt-1">Xáo trộn ngẫu nhiên toàn bộ câu hỏi từ tất cả các chủ đề trong khóa học.</p>
+                  <p class="text-sm text-slate-500 mt-1">Chọn chủ đề muốn luyện, nhập số câu và nhấn Enter để bốc ngẫu nhiên chia đều.</p>
                 </div>
-                <div id="mixedQuizTotalHint" class="text-xs font-semibold text-emerald-600 pt-2">Trộn tất cả 11 câu hỏi →</div>
+                <div id="mixedQuizTotalHint" class="text-xs font-semibold text-emerald-600 pt-2">Tùy chỉnh đề trộn →</div>
               </button>
             </div>
 
             <div id="practiceTopicListScreen" class="space-y-3 hidden">
               <div class="text-sm font-semibold text-slate-600 px-1">Chọn chủ đề bạn muốn ôn tập:</div>
-              <div id="practiceTopicsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <button onclick="startTopicQuiz('pt-1794895945818')" class="group text-left bg-white rounded-2xl border border-slate-200 hover:border-indigo-400 p-5 shadow-sm transition flex items-center justify-between gap-4">
-          <div><div class="font-bold text-slate-900 group-hover:text-indigo-600">Chủ đề 1: Xác suất - Thống kê - Khai triển</div><div class="text-xs text-slate-500 mt-1">1 câu hỏi</div></div>
-          <span class="text-xs font-semibold text-indigo-600 shrink-0">Làm bài →</span>
-        </button>
-      
-        <button onclick="startTopicQuiz('pt-1794901991144')" class="group text-left bg-white rounded-2xl border border-slate-200 hover:border-indigo-400 p-5 shadow-sm transition flex items-center justify-between gap-4">
-          <div><div class="font-bold text-slate-900 group-hover:text-indigo-600">Tổ hợp - Xác suất - Thống kê</div><div class="text-xs text-slate-500 mt-1">10 câu hỏi</div></div>
-          <span class="text-xs font-semibold text-indigo-600 shrink-0">Làm bài →</span>
-        </button>
-      </div>
+              <div id="practiceTopicsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+            </div>
+
+            <!-- CẤU HÌNH TRỘN BÀI TỔNG HỢP (CHỌN CHỦ ĐỀ + SỐ CÂU + ENTER) -->
+            <div id="practiceMixedSetupScreen" class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6 hidden">
+              <div class="flex flex-wrap items-start justify-between gap-3 pb-4 border-b border-slate-100">
+                <div>
+                  <h3 class="text-lg font-bold text-slate-900">Tạo đề trộn tổng hợp chia đều theo chủ đề</h3>
+                  <p class="text-xs sm:text-sm text-slate-500 mt-1">Tích chọn các chủ đề muốn luyện, nhập số câu muốn làm rồi nhấn <strong>Enter</strong>.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button type="button" onclick="selectAllMixedTopics(true)" class="px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold transition">
+                    Chọn tất cả
+                  </button>
+                  <button type="button" onclick="selectAllMixedTopics(false)" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-semibold transition">
+                    Bỏ chọn
+                  </button>
+                </div>
+              </div>
+
+              <div class="space-y-2.5">
+                <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-500">
+                  <span>1. Chọn chủ đề muốn luyện</span>
+                  <span id="mixedSelectedTopicsBadge" class="text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full normal-case font-semibold"></span>
+                </div>
+                <div id="mixedTopicsCheckboxes" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5"></div>
+              </div>
+
+              <div class="pt-4 border-t border-slate-100 space-y-3">
+                <label for="mixedQuestionCountInput" class="block text-xs font-bold uppercase tracking-wider text-slate-500">
+                  2. Nhập số câu muốn làm (nhấn Enter để bắt đầu ngay)
+                </label>
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <input id="mixedQuestionCountInput" type="number" min="1" placeholder="Nhập số câu..."
+                    oninput="updateMixedSetupSummary()"
+                    onkeydown="if (event.key === 'Enter') { event.preventDefault(); startConfiguredMixedQuiz(); }"
+                    class="w-full sm:w-44 px-4 py-3 rounded-xl border-2 border-slate-300 focus:border-emerald-500 bg-white text-base font-bold text-slate-900 focus:outline-none">
+                  <button type="button" onclick="startConfiguredMixedQuiz()" class="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold shadow-sm transition flex items-center justify-center gap-2">
+                    <span>🔀 Bắt đầu làm bài</span>
+                    <span class="text-xs opacity-85 font-normal">(Enter)</span>
+                  </button>
+                </div>
+
+                <div id="mixedQuickPresetRow" class="flex flex-wrap items-center gap-1.5 pt-0.5"></div>
+
+                <div id="mixedDistributionPreview" class="text-xs font-medium text-slate-600 bg-slate-50 border border-slate-200/80 rounded-xl px-3.5 py-2.5"></div>
+              </div>
             </div>
 
             <div id="practiceQuizScreen" class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm hidden">
-              <div id="quizContainer"><div class="space-y-5">
-          <div class="p-5 rounded-2xl border border-slate-200 bg-slate-50/40 space-y-3">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div class="flex items-center gap-2">
-                <span class="text-xs font-bold text-indigo-600">Câu 1</span>
-                <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-slate-200/70 text-slate-700">Trắc nghiệm</span>
-              </div>
-              <span class="text-[11px] font-medium px-2 py-0.5 rounded bg-slate-100 text-slate-500">Tổ hợp - Xác suất - Thống kê</span>
-            </div>
-            <div class="font-semibold text-slate-900 text-[15px] leading-relaxed">Một lớp học có 20 nữ và 15 nam. Hỏi có bao nhiêu cách chọn ra 5 bạn sao cho có đủ nam và nữ và số nam ít hơn số nữ?</div>
-            
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              <button onclick="answerQuizQuestion(0, 0)" class="text-left p-3 rounded-xl border text-sm transition flex items-start gap-2 border-slate-200 bg-white hover:border-indigo-300 text-slate-700"><span class="font-bold shrink-0">A.</span><span>192375</span></button><button onclick="answerQuizQuestion(0, 1)" class="text-left p-3 rounded-xl border text-sm transition flex items-start gap-2 border-slate-200 bg-white hover:border-indigo-300 text-slate-700"><span class="font-bold shrink-0">B.</span><span>113750</span></button><button onclick="answerQuizQuestion(0, 2)" class="text-left p-3 rounded-xl border text-sm transition flex items-start gap-2 border-slate-200 bg-white hover:border-indigo-300 text-slate-700"><span class="font-bold shrink-0">C.</span><span>129254</span></button><button onclick="answerQuizQuestion(0, 3)" class="text-left p-3 rounded-xl border text-sm transition flex items-start gap-2 border-slate-200 bg-white hover:border-indigo-300 text-slate-700"><span class="font-bold shrink-0">D.</span><span>84075</span></button>
-            </div>
-            
-          
-          </div>
-        
-          <div class="p-5 rounded-2xl border border-slate-200 bg-slate-50/40 space-y-3">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div class="flex items-center gap-2">
-                <span class="text-xs font-bold text-indigo-600">Câu 2</span>
-                <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-slate-200/70 text-slate-700">Đúng / Sai (4 ý a-d)</span>
-              </div>
-              <span class="text-[11px] font-medium px-2 py-0.5 rounded bg-slate-100 text-slate-500">Tổ hợp - Xác suất - Thống kê</span>
-            </div>
-            <div class="font-semibold text-slate-900 text-[15px] leading-relaxed">Cho hai biến cố A và B, với <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>A</mi><mo stretchy="false">)</mo><mo>=</mo><mn>0</mn><mo separator="true">,</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">P(A) = 0,4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathnormal">A</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">4</span></span></span></span>, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>B</mi><mo stretchy="false">)</mo><mo>=</mo><mn>0</mn><mo separator="true">,</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">P(B) = 0,8</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">8</span></span></span></span>, <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>A</mi><mo>∩</mo><mi>B</mi><mo stretchy="false">)</mo><mo>=</mo><mn>0</mn><mo separator="true">,</mo><mn>4</mn></mrow><annotation encoding="application/x-tex">P(A \cap B) = 0,4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathnormal">A</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∩</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">4</span></span></span></span>. Xét các khẳng định sau:</div>
-            
-            
-            <div class="space-y-2">
-              
-                  <div class="p-3 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-white border-slate-200">
-                    <div class="text-sm text-slate-800 flex items-start gap-2 min-w-0">
-                      <span class="font-bold shrink-0">a)</span>
-                      <div><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mover accent="true"><mi>A</mi><mo stretchy="true">‾</mo></mover><mo stretchy="false">)</mo><mo>=</mo><mn>0</mn><mo separator="true">,</mo><mn>6</mn></mrow><annotation encoding="application/x-tex">P(\overline{A}) = 0,6</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1333em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord overline"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8833em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">A</span></span></span><span style="top:-3.8033em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">6</span></span></span></span> và <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mover accent="true"><mi>B</mi><mo stretchy="true">‾</mo></mover><mo stretchy="false">)</mo><mo>=</mo><mn>0</mn><mo separator="true">,</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">P(\overline{B}) = 0,2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1333em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord overline"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8833em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05017em;">B</span></span></span><span style="top:-3.8033em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">2</span></span></span></span></div>
-                    </div>
-                    <div class="flex items-center gap-1.5 shrink-0">
-                      <button onclick="answerTrueFalseItem(1, 0, true)" class="px-3 py-1.5 rounded-lg text-xs font-bold border bg-slate-50 text-slate-700 border-slate-200">Đúng</button>
-                      <button onclick="answerTrueFalseItem(1, 0, false)" class="px-3 py-1.5 rounded-lg text-xs font-bold border bg-slate-50 text-slate-700 border-slate-200">Sai</button>
-                    </div>
-                  </div>
-                
-                  <div class="p-3 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-white border-slate-200">
-                    <div class="text-sm text-slate-800 flex items-start gap-2 min-w-0">
-                      <span class="font-bold shrink-0">b)</span>
-                      <div><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>A</mi><mi mathvariant="normal">∣</mi><mi>B</mi><mo stretchy="false">)</mo><mo>=</mo><mn>1</mn><mi mathvariant="normal">/</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">P(A|B) = 1/2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathnormal">A</span><span class="mord">∣</span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1/2</span></span></span></span></div>
-                    </div>
-                    <div class="flex items-center gap-1.5 shrink-0">
-                      <button onclick="answerTrueFalseItem(1, 1, true)" class="px-3 py-1.5 rounded-lg text-xs font-bold border bg-slate-50 text-slate-700 border-slate-200">Đúng</button>
-                      <button onclick="answerTrueFalseItem(1, 1, false)" class="px-3 py-1.5 rounded-lg text-xs font-bold border bg-slate-50 text-slate-700 border-slate-200">Sai</button>
-                    </div>
-                  </div>
-                
-                  <div class="p-3 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-white border-slate-200">
-                    <div class="text-sm text-slate-800 flex items-start gap-2 min-w-0">
-                      <span class="font-bold shrink-0">c)</span>
-                      <div><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>B</mi><mi mathvariant="normal">∣</mi><mi>A</mi><mo stretchy="false">)</mo><mo>=</mo><mn>3</mn><mi mathvariant="normal">/</mi><mn>4</mn></mrow><annotation encoding="application/x-tex">P(B|A) = 3/4</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mord">∣</span><span class="mord mathnormal">A</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">3/4</span></span></span></span></div>
-                    </div>
-                    <div class="flex items-center gap-1.5 shrink-0">
-                      <button onclick="answerTrueFalseItem(1, 2, true)" class="px-3 py-1.5 rounded-lg text-xs font-bold border bg-slate-50 text-slate-700 border-slate-200">Đúng</button>
-                      <button onclick="answerTrueFalseItem(1, 2, false)" class="px-3 py-1.5 rounded-lg text-xs font-bold border bg-slate-50 text-slate-700 border-slate-200">Sai</button>
-                    </div>
-                  </div>
-                
-                  <div class="p-3 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-white border-slate-200">
-                    <div class="text-sm text-slate-800 flex items-start gap-2 min-w-0">
-                      <span class="font-bold shrink-0">d)</span>
-                      <div><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo stretchy="false">(</mo><mi>A</mi><mo>∪</mo><mi>B</mi><mo stretchy="false">)</mo><mo>=</mo><mn>0</mn><mo separator="true">,</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">P(A \cup B) = 0,8</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mopen">(</span><span class="mord mathnormal">A</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∪</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">8</span></span></span></span></div>
-                    </div>
-                    <div class="flex items-center gap-1.5 shrink-0">
-                      <button onclick="answerTrueFalseItem(1, 3, true)" class="px-3 py-1.5 rounded-lg text-xs font-bold border bg-slate-50 text-slate-700 border-slate-200">Đúng</button>
-                      <button onclick="answerTrueFalseItem(1, 3, false)" class="px-3 py-1.5 rounded-lg text-xs font-bold border bg-slate-50 text-slate-700 border-slate-200">Sai</button>
-                    </div>
-                  </div>
-                
-            </div>
-            
-              <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
-                <span class="text-xs text-slate-500">Đã chọn 0/4 ý (a, b, c, d)</span>
-                <button disabled="" onclick="checkTrueFalseQuestion(1)" class="px-4 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-xs font-semibold">Kiểm tra 4 ý a, b, c, d</button>
-              </div>
-            
-          
-          </div>
-        
-          <div class="p-5 rounded-2xl border border-slate-200 bg-slate-50/40 space-y-3">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div class="flex items-center gap-2">
-                <span class="text-xs font-bold text-indigo-600">Câu 3</span>
-                <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-slate-200/70 text-slate-700">Trả lời ngắn</span>
-              </div>
-              <span class="text-[11px] font-medium px-2 py-0.5 rounded bg-slate-100 text-slate-500">Tổ hợp - Xác suất - Thống kê</span>
-            </div>
-            <div class="font-semibold text-slate-900 text-[15px] leading-relaxed">Cho đa giác đều có 60 đỉnh. Số lượng tam giác đều có thể tạo thành từ 60 đỉnh đó là:</div>
-            
-            
-            <form onsubmit="submitShortAnswerQuestion(event, 2)" class="flex flex-wrap sm:flex-nowrap items-center gap-2">
-              <input id="quiz-sa-input-2" type="text" value="" oninput="updateShortAnswerDraft(2, this.value)" placeholder="Nhập đáp án của em vào khung này (VD: 3,5 hoặc -12)..." class="flex-1 min-w-[200px] px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-              <button type="submit" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold shrink-0">Kiểm tra</button>
-            </form>
-            
-          
-          </div>
-        
-          <div class="p-5 rounded-2xl border border-slate-200 bg-slate-50/40 space-y-3">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div class="flex items-center gap-2">
-                <span class="text-xs font-bold text-indigo-600">Câu 4</span>
-                <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-slate-200/70 text-slate-700">Trắc nghiệm</span>
-              </div>
-              <span class="text-[11px] font-medium px-2 py-0.5 rounded bg-slate-100 text-slate-500">Tổ hợp - Xác suất - Thống kê</span>
-            </div>
-            <div class="font-semibold text-slate-900 text-[15px] leading-relaxed">Cho 28 cây domino khác nhau, chia đều cho 4 người chơi. Hỏi có bao nhiêu cách chia?</div>
-            
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              <button onclick="answerQuizQuestion(3, 0)" class="text-left p-3 rounded-xl border text-sm transition flex items-start gap-2 border-slate-200 bg-white hover:border-indigo-300 text-slate-700"><span class="font-bold shrink-0">A.</span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mn>28</mn><mo stretchy="false">!</mo></mrow><mrow><mo stretchy="false">(</mo><mn>7</mn><mo stretchy="false">!</mo><msup><mo stretchy="false">)</mo><mn>4</mn></msup></mrow></mfrac></mrow><annotation encoding="application/x-tex">\frac{28!}{(7!)^4}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.4001em;vertical-align:-0.52em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8801em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mopen mtight">(</span><span class="mord mtight">7</span><span class="mclose mtight">!</span><span class="mclose mtight"><span class="mclose mtight">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7463em;"><span style="top:-2.786em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight">4</span></span></span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">28</span><span class="mclose mtight">!</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.52em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></button><button onclick="answerQuizQuestion(3, 1)" class="text-left p-3 rounded-xl border text-sm transition flex items-start gap-2 border-slate-200 bg-white hover:border-indigo-300 text-slate-700"><span class="font-bold shrink-0">B.</span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mn>28</mn><mo stretchy="false">!</mo></mrow><mrow><mn>4</mn><mo stretchy="false">!</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">\frac{28!}{4!}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2251em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8801em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">4</span><span class="mclose mtight">!</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">28</span><span class="mclose mtight">!</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></button><button onclick="answerQuizQuestion(3, 2)" class="text-left p-3 rounded-xl border text-sm transition flex items-start gap-2 border-slate-200 bg-white hover:border-indigo-300 text-slate-700"><span class="font-bold shrink-0">C.</span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mn>28</mn><mo stretchy="false">!</mo></mrow><mrow><mn>7</mn><mo stretchy="false">!</mo><mo>⋅</mo><mn>4</mn></mrow></mfrac></mrow><annotation encoding="application/x-tex">\frac{28!}{7! \cdot 4}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2251em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8801em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">7</span><span class="mclose mtight">!</span><span class="mbin mtight">⋅</span><span class="mord mtight">4</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">28</span><span class="mclose mtight">!</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></button><button onclick="answerQuizQuestion(3, 3)" class="text-left p-3 rounded-xl border text-sm transition flex items-start gap-2 border-slate-200 bg-white hover:border-indigo-300 text-slate-700"><span class="font-bold shrink-0">D.</span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mn>28</mn><mo stretchy="false">!</mo></mrow><mrow><mn>7</mn><mo stretchy="false">!</mo><mo>⋅</mo><mn>4</mn><mo stretchy="false">!</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">\frac{28!}{7! \cdot 4!}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2251em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8801em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">7</span><span class="mclose mtight">!</span><span class="mbin mtight">⋅</span><span class="mord mtight">4</span><span class="mclose mtight">!</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">28</span><span class="mclose mtight">!</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></button>
-            </div>
-            
-          
-          </div>
-        
-          <div class="p-5 rounded-2xl border border-slate-200 bg-slate-50/40 space-y-3">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div class="flex items-center gap-2">
-                <span class="text-xs font-bold text-indigo-600">Câu 5</span>
-                <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-slate-200/70 text-slate-700">Trắc nghiệm</span>
-              </div>
-              <span class="text-[11px] font-medium px-2 py-0.5 rounded bg-slate-100 text-slate-500">Tổ hợp - Xác suất - Thống kê</span>
-            </div>
-            <div class="font-semibold text-slate-900 text-[15px] leading-relaxed">Tính khoảng biến thiên của mẫu số liệu: 148, 145, 155, 156, 160, 151, 150, 160, 162, 157.</div>
-            
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              <button onclick="answerQuizQuestion(4, 0)" class="text-left p-3 rounded-xl border text-sm transition flex items-start gap-2 border-slate-200 bg-white hover:border-indigo-300 text-slate-700"><span class="font-bold shrink-0">A.</span><span>9</span></button><button onclick="answerQuizQuestion(4, 1)" class="text-left p-3 rounded-xl border text-sm transition flex items-start gap-2 border-slate-200 bg-white hover:border-indigo-300 text-slate-700"><span class="font-bold shrink-0">B.</span><span>17</span></button><button onclick="answerQuizQuestion(4, 2)" class="text-left p-3 rounded-xl border text-sm transition flex items-start gap-2 border-slate-200 bg-white hover:border-indigo-300 text-slate-700"><span class="font-bold shrink-0">C.</span><span>14</span></button><button onclick="answerQuizQuestion(4, 3)" class="text-left p-3 rounded-xl border text-sm transition flex items-start gap-2 border-slate-200 bg-white hover:border-indigo-300 text-slate-700"><span class="font-bold shrink-0">D.</span><span>15</span></button>
-            </div>
-            
-          
-          </div>
-        
-          <div class="p-5 rounded-2xl border border-slate-200 bg-slate-50/40 space-y-3">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div class="flex items-center gap-2">
-                <span class="text-xs font-bold text-indigo-600">Câu 6</span>
-                <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-slate-200/70 text-slate-700">Trả lời ngắn</span>
-              </div>
-              <span class="text-[11px] font-medium px-2 py-0.5 rounded bg-slate-100 text-slate-500">Tổ hợp - Xác suất - Thống kê</span>
-            </div>
-            <div class="font-semibold text-slate-900 text-[15px] leading-relaxed">Một quân cá ngựa đặt ở M. Mỗi bước đi, quân cá ngựa có thể đi xuống một ô được nối ở ngay dưới. Tính xác suất để sau 5 bước đi quân cá ngựa đến được C hoặc D.</div>
-            
-            
-            <form onsubmit="submitShortAnswerQuestion(event, 5)" class="flex flex-wrap sm:flex-nowrap items-center gap-2">
-              <input id="quiz-sa-input-5" type="text" value="" oninput="updateShortAnswerDraft(5, this.value)" placeholder="Nhập đáp án của em vào khung này (VD: 3,5 hoặc -12)..." class="flex-1 min-w-[200px] px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-              <button type="submit" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold shrink-0">Kiểm tra</button>
-            </form>
-            
-          
-          </div>
-        
-          <div class="p-5 rounded-2xl border border-slate-200 bg-slate-50/40 space-y-3">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div class="flex items-center gap-2">
-                <span class="text-xs font-bold text-indigo-600">Câu 7</span>
-                <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-slate-200/70 text-slate-700">Trắc nghiệm</span>
-              </div>
-              <span class="text-[11px] font-medium px-2 py-0.5 rounded bg-slate-100 text-slate-500">Tổ hợp - Xác suất - Thống kê</span>
-            </div>
-            <div class="font-semibold text-slate-900 text-[15px] leading-relaxed">Có 4 viên bi đỏ và 3 viên bi xanh. Lấy ngẫu nhiên 3 viên. Tính xác suất trong 3 viên có 2 viên màu đỏ.</div>
-            
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              <button onclick="answerQuizQuestion(6, 0)" class="text-left p-3 rounded-xl border text-sm transition flex items-start gap-2 border-slate-200 bg-white hover:border-indigo-300 text-slate-700"><span class="font-bold shrink-0">A.</span><span>18/35</span></button><button onclick="answerQuizQuestion(6, 1)" class="text-left p-3 rounded-xl border text-sm transition flex items-start gap-2 border-slate-200 bg-white hover:border-indigo-300 text-slate-700"><span class="font-bold shrink-0">B.</span><span>6/35</span></button><button onclick="answerQuizQuestion(6, 2)" class="text-left p-3 rounded-xl border text-sm transition flex items-start gap-2 border-slate-200 bg-white hover:border-indigo-300 text-slate-700"><span class="font-bold shrink-0">C.</span><span>9/35</span></button><button onclick="answerQuizQuestion(6, 3)" class="text-left p-3 rounded-xl border text-sm transition flex items-start gap-2 border-slate-200 bg-white hover:border-indigo-300 text-slate-700"><span class="font-bold shrink-0">D.</span><span>8/35</span></button>
-            </div>
-            
-          
-          </div>
-        
-          <div class="p-5 rounded-2xl border border-slate-200 bg-slate-50/40 space-y-3">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div class="flex items-center gap-2">
-                <span class="text-xs font-bold text-indigo-600">Câu 8</span>
-                <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-slate-200/70 text-slate-700">Trả lời ngắn</span>
-              </div>
-              <span class="text-[11px] font-medium px-2 py-0.5 rounded bg-slate-100 text-slate-500">Tổ hợp - Xác suất - Thống kê</span>
-            </div>
-            <div class="font-semibold text-slate-900 text-[15px] leading-relaxed">Cho tập hợp <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>A</mi><mo>=</mo><mo stretchy="false">{</mo><mn>2</mn><mo separator="true">;</mo><mn>3</mn><mo separator="true">;</mo><mn>5</mn><mo separator="true">;</mo><mn>8</mn><mo stretchy="false">}</mo></mrow><annotation encoding="application/x-tex">A = \{2;3;5;8\}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">A</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">{</span><span class="mord">2</span><span class="mpunct">;</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">3</span><span class="mpunct">;</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">5</span><span class="mpunct">;</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">8</span><span class="mclose">}</span></span></span></span>. Có thể lập bao nhiêu số tự nhiên <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi></mrow><annotation encoding="application/x-tex">x</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">x</span></span></span></span> sao cho <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>400</mn><mo>&lt;</mo><mi>x</mi><mo>&lt;</mo><mn>600</mn></mrow><annotation encoding="application/x-tex">400 &lt; x &lt; 600</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6835em;vertical-align:-0.0391em;"></span><span class="mord">400</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.5782em;vertical-align:-0.0391em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">600</span></span></span></span>?</div>
-            
-            
-            <form onsubmit="submitShortAnswerQuestion(event, 7)" class="flex flex-wrap sm:flex-nowrap items-center gap-2">
-              <input id="quiz-sa-input-7" type="text" value="" oninput="updateShortAnswerDraft(7, this.value)" placeholder="Nhập đáp án của em vào khung này (VD: 3,5 hoặc -12)..." class="flex-1 min-w-[200px] px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-              <button type="submit" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold shrink-0">Kiểm tra</button>
-            </form>
-            
-          
-          </div>
-        
-          <div class="p-5 rounded-2xl border border-slate-200 bg-slate-50/40 space-y-3">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div class="flex items-center gap-2">
-                <span class="text-xs font-bold text-indigo-600">Câu 9</span>
-                <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-slate-200/70 text-slate-700">Trắc nghiệm</span>
-              </div>
-              <span class="text-[11px] font-medium px-2 py-0.5 rounded bg-slate-100 text-slate-500">Tổ hợp - Xác suất - Thống kê</span>
-            </div>
-            <div class="font-semibold text-slate-900 text-[15px] leading-relaxed">Trong không gian cho 4 điểm A, B, C, D. Từ các điểm trên ta lập các vectơ khác vectơ không. Hỏi có thể có bao nhiêu vectơ?</div>
-            
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              <button onclick="answerQuizQuestion(8, 0)" class="text-left p-3 rounded-xl border text-sm transition flex items-start gap-2 border-slate-200 bg-white hover:border-indigo-300 text-slate-700"><span class="font-bold shrink-0">A.</span><span>6</span></button><button onclick="answerQuizQuestion(8, 1)" class="text-left p-3 rounded-xl border text-sm transition flex items-start gap-2 border-slate-200 bg-white hover:border-indigo-300 text-slate-700"><span class="font-bold shrink-0">B.</span><span>10</span></button><button onclick="answerQuizQuestion(8, 2)" class="text-left p-3 rounded-xl border text-sm transition flex items-start gap-2 border-slate-200 bg-white hover:border-indigo-300 text-slate-700"><span class="font-bold shrink-0">C.</span><span>12</span></button><button onclick="answerQuizQuestion(8, 3)" class="text-left p-3 rounded-xl border text-sm transition flex items-start gap-2 border-slate-200 bg-white hover:border-indigo-300 text-slate-700"><span class="font-bold shrink-0">D.</span><span>8</span></button>
-            </div>
-            
-          
-          </div>
-        
-          <div class="p-5 rounded-2xl border border-slate-200 bg-slate-50/40 space-y-3">
-            <div class="flex flex-wrap items-center justify-between gap-2">
-              <div class="flex items-center gap-2">
-                <span class="text-xs font-bold text-indigo-600">Câu 10</span>
-                <span class="text-[11px] font-semibold px-2 py-0.5 rounded bg-slate-200/70 text-slate-700">Trả lời ngắn</span>
-              </div>
-              <span class="text-[11px] font-medium px-2 py-0.5 rounded bg-slate-100 text-slate-500">Tổ hợp - Xác suất - Thống kê</span>
-            </div>
-            <div class="font-semibold text-slate-900 text-[15px] leading-relaxed">Gieo một con xúc xắc cân đối và đồng chất hai lần. Tính xác suất để lần đầu gieo được mặt 1 chấm, biết rằng tổng số chấm trong hai lần gieo không vượt quá 3.</div>
-            
-            
-            <form onsubmit="submitShortAnswerQuestion(event, 9)" class="flex flex-wrap sm:flex-nowrap items-center gap-2">
-              <input id="quiz-sa-input-9" type="text" value="" oninput="updateShortAnswerDraft(9, this.value)" placeholder="Nhập đáp án của em vào khung này (VD: 3,5 hoặc -12)..." class="flex-1 min-w-[200px] px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-              <button type="submit" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold shrink-0">Kiểm tra</button>
-            </form>
-            
-          
-          </div>
-        </div></div>
+              <div id="quizContainer"></div>
             </div>
           </div>
         </div>
@@ -704,19 +468,7 @@
             </div>
           </div>
 
-          <div id="teacherCoursePills" class="flex flex-wrap gap-2">
-        <button onclick="selectTeacherCourse('course-vy')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition bg-white text-slate-700 border-slate-200 hover:border-indigo-300">
-          Hoàng Lê Vy - Toán 11
-        </button>
-      
-        <button onclick="selectTeacherCourse('course-1794891429430')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition bg-white text-slate-700 border-slate-200 hover:border-indigo-300">
-          Bùi Nhật Minh - Vật Lý 10
-        </button>
-      
-        <button onclick="selectTeacherCourse('course-1794895945818')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition bg-indigo-600 text-white border-indigo-600 shadow-sm">
-          Phan Đăng Ngọc Linh - Toán 12 TSA
-        </button>
-      </div>
+          <div id="teacherCoursePills" class="flex flex-wrap gap-2"></div>
 
           <div class="flex flex-wrap items-center gap-3 pt-2 border-t border-slate-100">
             <span class="text-xs font-semibold text-slate-500">Khóa học đang chọn:</span>
@@ -732,17 +484,17 @@
           <button id="tTabGemini" onclick="switchTeacherTab('gemini')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100 transition">
             ✨ Gemini AI Studio
           </button>
-          <button id="tTabTheory" onclick="switchTeacherTab('theory')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100 transition">
+          <button id="tTabTheory" onclick="switchTeacherTab('theory')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-600 text-white shadow-sm transition">
             1. Lý thuyết (NotebookLM)
           </button>
           <button id="tTabDocs" onclick="switchTeacherTab('docs')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100 transition">
             2. Tài liệu (Drive)
           </button>
-          <button id="tTabPractice" onclick="switchTeacherTab('practice')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-600 text-white shadow-sm transition">
+          <button id="tTabPractice" onclick="switchTeacherTab('practice')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100 transition">
             3. Luyện tập (Chủ đề)
           </button>
           <button id="tTabSecurity" onclick="switchTeacherTab('security')" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100 transition">
-            4. Bảo mật &amp; Cấp quyền
+            4. Bảo mật & Cấp quyền
           </button>
         </div>
 
@@ -757,7 +509,7 @@
                   <p class="text-xs text-slate-500">Đọc trực tiếp file <strong>PDF đề thi, Ảnh chụp đề bài, file Word (.docx)</strong> và văn bản.</p>
                 </div>
               </div>
-              <span id="geminiConnBadge" class="text-xs font-semibold px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">✓ Đã nhập API Key</span>
+              <span id="geminiConnBadge" class="text-xs font-semibold px-3 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">Chưa nhập API Key</span>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
@@ -828,7 +580,7 @@
                 <div class="text-2xl mb-1">📄 🖼️</div>
                 <div class="text-sm font-semibold text-indigo-700">Bấm chọn PDF, Ảnh chụp đề thi hoặc Word (.docx)</div>
                 <div class="text-[11px] text-slate-500 mt-1">Hỗ trợ .pdf, .png, .jpg, .webp, .docx, .txt, .md</div>
-                <input id="geminiFileInput" type="file" multiple="" accept=".pdf,.png,.jpg,.jpeg,.webp,.docx,.txt,.md" class="hidden" onchange="handleGeminiFiles(event)">
+                <input id="geminiFileInput" type="file" multiple accept=".pdf,.png,.jpg,.jpeg,.webp,.docx,.txt,.md" class="hidden" onchange="handleGeminiFiles(event)">
               </label>
 
               <div id="geminiAttachedFilesList" class="space-y-1.5"></div>
@@ -886,15 +638,7 @@
               <h2 class="font-bold text-slate-900 text-sm">Các thư mục Lý thuyết</h2>
               <button onclick="addTheoryFolder()" class="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100">+ Thêm</button>
             </div>
-            <div id="teacherTheoryFolderList" class="space-y-1.5">
-        <button onclick="selectTeacherTheoryFolder('tf-1')" class="w-full text-left px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition flex items-center gap-2 bg-indigo-600 text-white">
-          <span>📁</span><span class="truncate">Thư mục 1: Hàm số lượng giác và Phương trình lượng giác</span>
-        </button>
-      
-        <button onclick="selectTeacherTheoryFolder('tf-2')" class="w-full text-left px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition flex items-center gap-2 bg-slate-50 text-slate-700 hover:bg-slate-100">
-          <span>📁</span><span class="truncate">Thư mục 2: Dãy số - Cấp số cộng</span>
-        </button>
-      </div>
+            <div id="teacherTheoryFolderList" class="space-y-1.5"></div>
           </div>
 
           <div class="lg:col-span-9 space-y-5">
@@ -910,7 +654,7 @@
 
               <div class="space-y-2">
                 <div class="flex flex-wrap items-center justify-between gap-2">
-                  <label class="text-xs font-semibold text-slate-600">Nội dung lý thuyết (Dán trực tiếp từ NotebookLM — tự giữ phông &amp; công thức toán)</label>
+                  <label class="text-xs font-semibold text-slate-600">Nội dung lý thuyết (Dán trực tiếp từ NotebookLM — tự giữ phông & công thức toán)</label>
                   <div class="flex flex-wrap items-center gap-1.5">
                     <button type="button" onclick="normalizeCurrentTheory()" class="px-2.5 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold">✨ Chuẩn hóa NotebookLM</button>
                     <button type="button" onclick="stripCitationsFromTheory()" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold">Bỏ trích dẫn [1][2]</button>
@@ -934,7 +678,7 @@
                     <div class="text-[11px] font-semibold text-slate-400 mb-2 pb-1.5 border-b border-slate-100">
                       Xem trước hiển thị của học sinh (KaTeX + Tiếng Việt)
                     </div>
-                    <div id="teacherTheoryLivePreview" class="math-prose space-y-2.5"><div class="h-1.5"></div><h3 class="text-base sm:text-lg font-bold text-indigo-700 pt-3 pb-1">CÔNG THỨC LƯỢNG GIÁC NỀN TẢNG</h3><div class="h-1.5"></div><div class="flex items-start gap-2.5" style="padding-left:4px"><span class="text-indigo-600 font-bold mt-0.5 shrink-0 select-none">•</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Dấu của các giá trị lượng giác theo 4 góc phần tư</strong>:</div></div><div class="h-1.5"></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Góc phần tư I</strong> (0 &lt; α &lt; π/2): sin α &gt; 0, cos α &gt; 0, tan α &gt; 0, cot α &gt; 0.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Góc phần tư II</strong> (π/2 &lt; α &lt; π): sin α &gt; 0, cos α &lt; 0, tan α &lt; 0, cot α &lt; 0.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Góc phần tư III</strong> (π &lt; α &lt; 3π/2): sin α &lt; 0, cos α &lt; 0, tan α &gt; 0, cot α &gt; 0.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Góc phần tư IV</strong> (3π/2 &lt; α &lt; 2π): sin α &lt; 0, cos α &gt; 0, tan α &lt; 0, cot α &lt; 0.</div></div><div class="flex items-start gap-2.5" style="padding-left:4px"><span class="text-indigo-600 font-bold mt-0.5 shrink-0 select-none">•</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Các công thức lượng giác cơ bản</strong>:</div></div><div class="h-1.5"></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Hệ thức giữa sin và cos</strong>: sin²x + cos²x = 1.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Mối liên hệ giữa tan và cos</strong>: 1 + tan²x = 1 / cos²x (điều kiện cos x ≠ 0).</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Mối liên hệ giữa cot và sin</strong>: 1 + cot²x = 1 / sin²x (điều kiện sin x ≠ 0).</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Tích tan và cot</strong>: tan x . cot x = 1 (điều kiện sin 2x ≠ 0).</div></div><div class="flex items-start gap-2.5" style="padding-left:4px"><span class="text-indigo-600 font-bold mt-0.5 shrink-0 select-none">•</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Cung góc liên kết (Cos đối - Sin bù - Phụ chéo - Hơn kém π Tang)</strong>:</div></div><div class="h-1.5"></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Cung đối nhau</strong> (α và -α): cos(-α) = cos α, sin(-α) = -sin α, tan(-α) = -tan α, cot(-α) = -cot α.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Cung bù nhau</strong> (α và π - α): sin(π - α) = sin α, cos(π - α) = -cos α, tan(π - α) = -tan α, cot(π - α) = -cot α.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Cung phụ nhau</strong> (α và π/2 - α): sin(π/2 - α) = cos α, cos(π/2 - α) = sin α, tan(π/2 - α) = cot α, cot(π/2 - α) = tan α.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Cung hơn kém π</strong> (α và α + π): tan(α + π) = tan α, cot(α + π) = cot α, sin(α + π) = -sin α, cos(α + π) = -cos α.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Cung hơn kém π/2</strong> (α và α + π/2): sin(α + π/2) = cos α, cos(α + π/2) = -sin α, tan(α + π/2) = -cot α, cot(α + π/2) = -tan α.</div></div><div class="flex items-start gap-2.5" style="padding-left:4px"><span class="text-indigo-600 font-bold mt-0.5 shrink-0 select-none">•</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Công thức cộng</strong>:</div></div><div class="h-1.5"></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Công thức đối với sin</strong>: sin(a ± b) = sin a . cos b ± cos a . sin b.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Công thức đối với cos</strong>: cos(a ± b) = cos a . cos b ∓ sin a . sin b.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Công thức đối với tan</strong>: tan(a ± b) = (tan a ± tan b) / (1 ∓ tan a . tan b).</div></div><div class="flex items-start gap-2.5" style="padding-left:4px"><span class="text-indigo-600 font-bold mt-0.5 shrink-0 select-none">•</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Công thức nhân đôi, nhân ba và hạ bậc</strong>:</div></div><div class="h-1.5"></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Công thức nhân đôi</strong>: </div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">sin 2x = 2 . sin x . cos x.</div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">cos 2x = cos²x - sin²x = 2cos²x - 1 = 1 - 2sin²x.</div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">tan 2x = (2tan x) / (1 - tan²x).</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Công thức hạ bậc</strong>: </div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">sin²x = (1 - cos 2x) / 2.</div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">cos²x = (1 + cos 2x) / 2.</div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">tan²x = (1 - cos 2x) / (1 + cos 2x).</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Công thức nhân ba</strong>: </div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">sin 3x = 3sin x - 4sin³x.</div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">cos 3x = 4cos³x - 3cos x.</div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">tan 3x = (3tan x - tan³x) / (1 - 3tan²x).</div></div><div class="flex items-start gap-2.5" style="padding-left:4px"><span class="text-indigo-600 font-bold mt-0.5 shrink-0 select-none">•</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Công thức biến đổi tổng thành tích</strong>:</div></div><div class="h-1.5"></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">cos a + cos b = 2 . cos[(a + b)/2] . cos[(a - b)/2].</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">cos a - cos b = -2 . sin[(a + b)/2] . sin[(a - b)/2].</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">sin a + sin b = 2 . sin[(a + b)/2] . cos[(a - b)/2].</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">sin a - sin b = 2 . cos[(a + b)/2] . sin[(a - b)/2].</div></div><div class="flex items-start gap-2.5" style="padding-left:4px"><span class="text-indigo-600 font-bold mt-0.5 shrink-0 select-none">•</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Công thức biến đổi tích thành tổng</strong>:</div></div><div class="h-1.5"></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">cos a . cos b = (1/2) . [cos(a - b) + cos(a + b)].</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">sin a . sin b = (1/2) . [cos(a - b) - cos(a + b)].</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">sin a . cos b = (1/2) . [sin(a - b) + sin(a + b)].</div></div><div class="flex items-start gap-2.5" style="padding-left:4px"><span class="text-indigo-600 font-bold mt-0.5 shrink-0 select-none">•</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Hệ thức bổ trợ thông dụng</strong>:</div></div><div class="h-1.5"></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">sin x + cos x = √2 . sin(x + π/4) = √2 . cos(x - π/4).</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">sin x - cos x = √2 . sin(x - π/4) = -√2 . cos(x + π/4).</div></div><div class="h-1.5"></div><hr class="my-4 border-slate-200"><div class="h-1.5"></div><h3 class="text-base sm:text-lg font-bold text-indigo-700 pt-3 pb-1">HÀM SỐ LƯỢNG GIÁC</h3><div class="h-1.5"></div><div class="flex items-start gap-2.5" style="padding-left:4px"><span class="text-indigo-600 font-bold mt-0.5 shrink-0 select-none">•</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Hàm số y = sin x</strong>:</div></div><div class="h-1.5"></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Tập xác định</strong>: D = R.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Tập giá trị</strong>: [-1; 1].</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Tính chẵn - lẻ</strong>: Là <strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">hàm số lẻ</strong> (đồ thị nhận gốc tọa độ O làm tâm đối xứng).</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Tính tuần hoàn</strong>: Chu kì cơ sở T0 = 2π. Chu kì hàm số y = sin(ax + b) là T = 2π / |a|.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Khoảng đồng biến</strong>: Đồng biến trên các khoảng (-π/2 + k2π; π/2 + k2π) với k ∈ Z.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Khoảng nghịch biến</strong>: Nghịch biến trên các khoảng (π/2 + k2π; 3π/2 + k2π) với k ∈ Z.</div></div><div class="flex items-start gap-2.5" style="padding-left:4px"><span class="text-indigo-600 font-bold mt-0.5 shrink-0 select-none">•</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Hàm số y = cos x</strong>:</div></div><div class="h-1.5"></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Tập xác định</strong>: D = R.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Tập giá trị</strong>: [-1; 1].</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Tính chẵn - lẻ</strong>: Là <strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">hàm số chẵn</strong> (đồ thị nhận trục tung Oy làm trục đối xứng).</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Tính tuần hoàn</strong>: Chu kì cơ sở T0 = 2π. Chu kì hàm số y = cos(ax + b) là T = 2π / |a|.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Khoảng đồng biến</strong>: Đồng biến trên các khoảng (-π + k2π; k2π) với k ∈ Z.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Khoảng nghịch biến</strong>: Nghịch biến trên các khoảng (k2π; π + k2π) với k ∈ Z.</div></div><div class="flex items-start gap-2.5" style="padding-left:4px"><span class="text-indigo-600 font-bold mt-0.5 shrink-0 select-none">•</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Hàm số y = tan x</strong>:</div></div><div class="h-1.5"></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Tập xác định</strong>: D = R \ {π/2 + kπ | k ∈ Z}.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Tập giá trị</strong>: R.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Tính chẵn - lẻ</strong>: Là <strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">hàm số lẻ</strong> (đồ thị đối xứng qua gốc tọa độ O).</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Tính tuần hoàn</strong>: Chu kì cơ sở T0 = π. Chu kì hàm số y = tan(ax + b) là T = π / |a|.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Sự biến thiên</strong>: Luôn <strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">đồng biến</strong> trên từng khoảng xác định (-π/2 + kπ; π/2 + kπ) với k ∈ Z (không có khoảng nghịch biến).</div></div><div class="flex items-start gap-2.5" style="padding-left:4px"><span class="text-indigo-600 font-bold mt-0.5 shrink-0 select-none">•</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Hàm số y = cot x</strong>:</div></div><div class="h-1.5"></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Tập xác định</strong>: D = R \ {kπ | k ∈ Z}.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Tập giá trị</strong>: R.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Tính chẵn - lẻ</strong>: Là <strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">hàm số lẻ</strong> (đồ thị đối xứng qua gốc tọa độ O).</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Tính tuần hoàn</strong>: Chu kì cơ sở T0 = π. Chu kì hàm số y = cot(ax + b) là T = π / |a|.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Sự biến thiên</strong>: Luôn <strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">nghịch biến</strong> trên từng khoảng xác định (kπ; π + kπ) với k ∈ Z (không có khoảng đồng biến).</div></div><div class="flex items-start gap-2.5" style="padding-left:4px"><span class="text-indigo-600 font-bold mt-0.5 shrink-0 select-none">•</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Phương pháp giải các bài toán về hàm số</strong>:</div></div><div class="h-1.5"></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Tìm tập xác định</strong>: Điều kiện mẫu thức khác 0, căn bậc chẵn không âm; tan u(x) cần u(x) ≠ π/2 + kπ; cot u(x) cần u(x) ≠ kπ (k ∈ Z).</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Tìm giá trị lớn nhất và nhỏ nhất (GTLN - GTNN)</strong>: Chặn miền giá trị -1 ≤ sin u, cos u ≤ 1 hoặc 0 ≤ sin²u, cos²u, |sin u|, |cos u| ≤ 1.</div></div><div class="h-1.5"></div><hr class="my-4 border-slate-200"><div class="h-1.5"></div><h3 class="text-base sm:text-lg font-bold text-indigo-700 pt-3 pb-1">PHƯƠNG TRÌNH LƯỢNG GIÁC</h3><div class="h-1.5"></div><div class="flex items-start gap-2.5" style="padding-left:4px"><span class="text-indigo-600 font-bold mt-0.5 shrink-0 select-none">•</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Phương trình lượng giác cơ bản (với k ∈ Z)</strong>:</div></div><div class="h-1.5"></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Phương trình sin a = sin b</strong>: </div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">a = b + k2π.</div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">a = π - b + k2π.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Phương trình cos a = cos b</strong>: </div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">a = b + k2π.</div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">a = -b + k2π.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Phương trình tan a = tan b</strong>: </div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">a = b + kπ.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Phương trình cot a = cot b</strong>: </div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">a = b + kπ.</div></div><div class="flex items-start gap-2.5" style="padding-left:4px"><span class="text-indigo-600 font-bold mt-0.5 shrink-0 select-none">•</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Các trường hợp nghiệm đặc biệt</strong>:</div></div><div class="h-1.5"></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Đối với sin</strong>: </div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">sin x = 0 ⇔ x = kπ.</div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">sin x = 1 ⇔ x = π/2 + k2π.</div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">sin x = -1 ⇔ x = -π/2 + k2π.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Đối với cos</strong>: </div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">cos x = 0 ⇔ x = π/2 + kπ.</div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">cos x = 1 ⇔ x = k2π.</div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">cos x = -1 ⇔ x = π + k2π.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Đối với tan và cot</strong>: </div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">tan x = 0 ⇔ x = kπ; tan x = ±1 ⇔ x = ±π/4 + kπ.</div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">cot x = 0 ⇔ x = π/2 + kπ; cot x = ±1 ⇔ x = ±π/4 + kπ.</div></div><div class="flex items-start gap-2.5" style="padding-left:4px"><span class="text-indigo-600 font-bold mt-0.5 shrink-0 select-none">•</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Kỹ thuật biến đổi giải phương trình lượng giác</strong>:</div></div><div class="h-1.5"></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Dùng góc phụ chuyển đổi</strong>: Đổi giữa sin và cos, hoặc tan và cot bằng góc phụ (π/2 - x).</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Phân tích hằng đẳng thức tạo tích</strong>: </div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">1 ± sin 2x = (sin x ± cos x)².</div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">cos 2x = cos²x - sin²x = (cos x - sin x)(cos x + sin x).</div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">cos⁴x - sin⁴x = cos 2x.</div></div><div class="flex items-start gap-2.5" style="padding-left:40px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1">1 ± tan x = (cos x ± sin x) / cos x.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Kỹ thuật hạ bậc</strong>: Dùng sin²x = (1 - cos 2x)/2 và cos²x = (1 + cos 2x)/2 để triệt tiêu số tự do, đưa về cùng góc hoặc phương trình tích.</div></div><div class="flex items-start gap-2.5" style="padding-left:22px"><span class="text-slate-400 text-xs mt-1.5 shrink-0 select-none">◦</span><div class="min-w-0 flex-1"><strong class="font-semibold text-slate-900 bg-amber-50/90 px-1 rounded">Kỹ thuật ghép cung</strong>: Áp dụng công thức biến đổi tổng thành tích để tạo nhân tử chung.</div></div><div class="h-1.5"></div><div class="h-1.5"></div></div>
+                    <div id="teacherTheoryLivePreview" class="math-prose space-y-2.5"></div>
                   </div>
                 </div>
               </div>
@@ -950,7 +694,7 @@
                   </label>
                   <button onclick="addTheoryFolderFile()" class="px-3 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-semibold">+ Thêm</button>
                 </div>
-                <div id="teacherTheoryFilesList" class="space-y-2"><div class="text-xs text-slate-400 italic">Chưa có file đính kèm nào.</div></div>
+                <div id="teacherTheoryFilesList" class="space-y-2"></div>
               </div>
             </div>
 
@@ -959,15 +703,7 @@
                 <h3 class="font-bold text-slate-900">Flashcard của thư mục này (Hỗ trợ LaTeX $...$)</h3>
                 <button onclick="addTheoryFlashcard()" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100">+ Thêm thẻ</button>
               </div>
-              <div id="teacherTheoryFlashcards" class="space-y-2 max-h-72 overflow-y-auto pr-1">
-          <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
-            <div class="flex justify-between text-xs font-semibold text-slate-500"><span>Thẻ #1</span><button onclick="removeTheoryFlashcard(0)" class="text-rose-600 hover:underline">Xóa</button></div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <input type="text" value="Ý chính đầu tiên?" placeholder="Mặt trước" onpaste="handleInputSmartPaste(event, v =&gt; updateTheoryFlashcard(0, 'front', v))" onchange="updateTheoryFlashcard(0, 'front', this.value)" class="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs">
-              <input type="text" value="```markdown" placeholder="Mặt sau" onpaste="handleInputSmartPaste(event, v =&gt; updateTheoryFlashcard(0, 'back', v))" onchange="updateTheoryFlashcard(0, 'back', this.value)" class="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs">
-            </div>
-          </div>
-        </div>
+              <div id="teacherTheoryFlashcards" class="space-y-2 max-h-72 overflow-y-auto pr-1"></div>
             </div>
           </div>
         </div>
@@ -1010,21 +746,13 @@
         </div>
 
         <!-- ==================== TEACHER PANEL 3: LUYỆN TẬP ==================== -->
-        <div id="teacherPanelPractice" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div id="teacherPanelPractice" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start hidden">
           <div class="lg:col-span-4 bg-white rounded-2xl border border-slate-200 p-4 shadow-sm space-y-3">
             <div class="flex items-center justify-between">
               <h2 class="font-bold text-slate-900 text-sm">Các Chủ đề Luyện tập</h2>
               <button onclick="addPracticeTopic()" class="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100">+ Thêm chủ đề</button>
             </div>
-            <div id="teacherPracticeTopicList" class="space-y-1.5">
-        <button onclick="selectTeacherPracticeTopic('pt-1794895945818')" class="w-full text-left px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition flex items-center justify-between gap-2 bg-slate-50 text-slate-700 hover:bg-slate-100">
-          <span class="truncate">Chủ đề 1: Xác suất - Thống kê - Khai triển</span><span class="text-[11px] opacity-80 shrink-0">1 câu</span>
-        </button>
-      
-        <button onclick="selectTeacherPracticeTopic('pt-1794901991144')" class="w-full text-left px-3 py-2 rounded-xl text-xs sm:text-sm font-medium transition flex items-center justify-between gap-2 bg-emerald-600 text-white">
-          <span class="truncate">Tổ hợp - Xác suất - Thống kê</span><span class="text-[11px] opacity-80 shrink-0">10 câu</span>
-        </button>
-      </div>
+            <div id="teacherPracticeTopicList" class="space-y-1.5"></div>
           </div>
 
           <div class="lg:col-span-8 bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
@@ -1038,515 +766,14 @@
             </div>
 
             <div class="flex flex-wrap items-center justify-between gap-2 pt-2">
-              <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Danh sách câu hỏi (Ảnh đề bài, Đúng/Sai a-d &amp; Trả lời ngắn)</span>
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Danh sách câu hỏi (Ảnh đề bài, Đúng/Sai a-d & Trả lời ngắn)</span>
               <div class="flex flex-wrap items-center gap-1.5">
                 <button onclick="addPracticeQuestion('mcq')" class="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100">+ Trắc nghiệm A/B/C/D</button>
                 <button onclick="addPracticeQuestion('true_false')" class="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-amber-50 text-amber-800 hover:bg-amber-100">+ Đúng / Sai (a,b,c,d)</button>
                 <button onclick="addPracticeQuestion('short_answer')" class="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100">+ Trả lời ngắn</button>
               </div>
             </div>
-            <div id="teacherPracticeQuestionsList" class="space-y-4 max-h-[640px] overflow-y-auto pr-1">
-            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
-              <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-slate-500">
-                <div class="flex items-center gap-2">
-                  <span class="font-bold text-slate-700">Câu hỏi #1</span>
-                  <select onchange="changePracticeQuestionType(0, this.value)" class="px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700">
-                    <option value="mcq" selected="">Trắc nghiệm A/B/C/D</option>
-                    <option value="true_false">Đúng / Sai (4 ý a,b,c,d)</option>
-                    <option value="short_answer">Trắc nghiệm trả lời ngắn</option>
-                  </select>
-                </div>
-                <button onclick="removePracticeQuestion(0)" class="text-rose-600 hover:underline">Xóa</button>
-              </div>
-
-              <div onpaste="handlePracticeImagePaste(event, 0)" class="p-2.5 rounded-lg border border-dashed border-slate-300 bg-white space-y-2">
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                  <span class="text-[11px] font-semibold text-slate-600">🖼️ Ảnh đề bài (thay cho hoặc kèm đề chữ — dán Ctrl+V vào đây)</span>
-                  <div class="flex items-center gap-2">
-                    <label class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-semibold cursor-pointer">
-                      Tải ảnh lên
-                      <input type="file" accept="image/*" class="hidden" onchange="uploadPracticeQuestionImage(0, event)">
-                    </label>
-                    
-                  </div>
-                </div>
-                
-              </div>
-
-              <textarea rows="2" placeholder="Nhập đề bài (dán công thức NotebookLM hoặc Ctrl+V dán ảnh)..." onpaste="handlePracticeTextOrImagePaste(event, 0)" onchange="updatePracticeQuestion(0, 'question', this.value)" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium">Một lớp học có 20 nữ và 15 nam. Hỏi có bao nhiêu cách chọn ra 5 bạn sao cho có đủ nam và nữ và số nam ít hơn số nữ?</textarea>
-              
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                
-                  <div class="flex items-center gap-1.5">
-                    <input type="radio" name="pt-correct-0" onchange="updatePracticeQuestion(0, 'correctIndex', 0)">
-                    <span class="text-xs font-bold text-slate-500">A.</span>
-                    <input type="text" value="192375" onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeOption(0, 0, v))" onchange="updatePracticeOption(0, 0, this.value)" class="flex-1 px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs">
-                  </div>
-                
-                  <div class="flex items-center gap-1.5">
-                    <input type="radio" name="pt-correct-0" checked="" onchange="updatePracticeQuestion(0, 'correctIndex', 1)">
-                    <span class="text-xs font-bold text-slate-500">B.</span>
-                    <input type="text" value="113750" onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeOption(0, 1, v))" onchange="updatePracticeOption(0, 1, this.value)" class="flex-1 px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs">
-                  </div>
-                
-                  <div class="flex items-center gap-1.5">
-                    <input type="radio" name="pt-correct-0" onchange="updatePracticeQuestion(0, 'correctIndex', 2)">
-                    <span class="text-xs font-bold text-slate-500">C.</span>
-                    <input type="text" value="129254" onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeOption(0, 2, v))" onchange="updatePracticeOption(0, 2, this.value)" class="flex-1 px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs">
-                  </div>
-                
-                  <div class="flex items-center gap-1.5">
-                    <input type="radio" name="pt-correct-0" onchange="updatePracticeQuestion(0, 'correctIndex', 3)">
-                    <span class="text-xs font-bold text-slate-500">D.</span>
-                    <input type="text" value="84075" onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeOption(0, 3, v))" onchange="updatePracticeOption(0, 3, this.value)" class="flex-1 px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs">
-                  </div>
-                
-              </div>
-              <input type="text" value="Số nam ít hơn số nữ và có đủ nam nữ gồm các trường hợp: (1 nam, 4 nữ), (2 nam, 3 nữ). Số cách chọn = $C_{15}^1 \cdot C_{20}^4 + C_{15}^2 \cdot C_{20}^3 = 15 \cdot 4845 + 105 \cdot 1140 = 72675 + 119700 = 192375$. Kiểm tra lại: Chọn 5 bạn bất kỳ $C_{35}^5 = 324632$. Các TH không thỏa mãn: 0 nam 5 nữ ($C_{20}^5 = 15504$), 3 nam 2 nữ ($C_{15}^3 \cdot C_{20}^2 = 455 \cdot 190 = 86450$), 4 nam 1 nữ ($C_{15}^4 \cdot C_{20}^1 = 1365 \cdot 20 = 27300$), 5 nam 0 nữ ($C_{15}^5 = 3003$). Tổng $192375 + 15504 + 86450 + 27300 + 3003 = 324632$ (Khớp). Đáp án đúng là 192375." placeholder="Giải thích đáp án..." onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeQuestion(0, 'explanation', v))" onchange="updatePracticeQuestion(0, 'explanation', this.value)" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-600">
-            </div>
-            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
-              <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-slate-500">
-                <div class="flex items-center gap-2">
-                  <span class="font-bold text-slate-700">Câu hỏi #2</span>
-                  <select onchange="changePracticeQuestionType(1, this.value)" class="px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700">
-                    <option value="mcq">Trắc nghiệm A/B/C/D</option>
-                    <option value="true_false" selected="">Đúng / Sai (4 ý a,b,c,d)</option>
-                    <option value="short_answer">Trắc nghiệm trả lời ngắn</option>
-                  </select>
-                </div>
-                <button onclick="removePracticeQuestion(1)" class="text-rose-600 hover:underline">Xóa</button>
-              </div>
-
-              <div onpaste="handlePracticeImagePaste(event, 1)" class="p-2.5 rounded-lg border border-dashed border-slate-300 bg-white space-y-2">
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                  <span class="text-[11px] font-semibold text-slate-600">🖼️ Ảnh đề bài (thay cho hoặc kèm đề chữ — dán Ctrl+V vào đây)</span>
-                  <div class="flex items-center gap-2">
-                    <label class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-semibold cursor-pointer">
-                      Tải ảnh lên
-                      <input type="file" accept="image/*" class="hidden" onchange="uploadPracticeQuestionImage(1, event)">
-                    </label>
-                    
-                  </div>
-                </div>
-                
-              </div>
-
-              <textarea rows="2" placeholder="Nhập đề bài (dán công thức NotebookLM hoặc Ctrl+V dán ảnh)..." onpaste="handlePracticeTextOrImagePaste(event, 1)" onchange="updatePracticeQuestion(1, 'question', this.value)" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium">Cho hai biến cố A và B, với $P(A) = 0,4$, $P(B) = 0,8$, $P(A \cap B) = 0,4$. Xét các khẳng định sau:</textarea>
-              
-              <div class="space-y-2 bg-white p-3 rounded-xl border border-amber-200/80">
-                <div class="text-[11px] font-bold text-amber-800">4 mệnh đề Đúng / Sai (a, b, c, d):</div>
-                
-                  <div class="flex flex-wrap sm:flex-nowrap items-center gap-2">
-                    <span class="text-xs font-bold text-slate-700 w-5 shrink-0">a)</span>
-                    <input type="text" value="$P(\overline{A}) = 0,6$ và $P(\overline{B}) = 0,2$" placeholder="Nội dung mệnh đề a..." onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeStatementText(1, 0, v))" onchange="updatePracticeStatementText(1, 0, this.value)" class="flex-1 min-w-[180px] px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50/70 text-xs">
-                    <div class="flex items-center gap-1 shrink-0">
-                      <button type="button" onclick="updatePracticeStatementTruth(1, 0, true)" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border bg-emerald-600 text-white border-emerald-600">Đúng</button>
-                      <button type="button" onclick="updatePracticeStatementTruth(1, 0, false)" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border bg-white text-slate-600 border-slate-200">Sai</button>
-                    </div>
-                  </div>
-                
-                  <div class="flex flex-wrap sm:flex-nowrap items-center gap-2">
-                    <span class="text-xs font-bold text-slate-700 w-5 shrink-0">b)</span>
-                    <input type="text" value="$P(A|B) = 1/2$" placeholder="Nội dung mệnh đề b..." onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeStatementText(1, 1, v))" onchange="updatePracticeStatementText(1, 1, this.value)" class="flex-1 min-w-[180px] px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50/70 text-xs">
-                    <div class="flex items-center gap-1 shrink-0">
-                      <button type="button" onclick="updatePracticeStatementTruth(1, 1, true)" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border bg-white text-slate-600 border-slate-200">Đúng</button>
-                      <button type="button" onclick="updatePracticeStatementTruth(1, 1, false)" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border bg-rose-600 text-white border-rose-600">Sai</button>
-                    </div>
-                  </div>
-                
-                  <div class="flex flex-wrap sm:flex-nowrap items-center gap-2">
-                    <span class="text-xs font-bold text-slate-700 w-5 shrink-0">c)</span>
-                    <input type="text" value="$P(B|A) = 3/4$" placeholder="Nội dung mệnh đề c..." onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeStatementText(1, 2, v))" onchange="updatePracticeStatementText(1, 2, this.value)" class="flex-1 min-w-[180px] px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50/70 text-xs">
-                    <div class="flex items-center gap-1 shrink-0">
-                      <button type="button" onclick="updatePracticeStatementTruth(1, 2, true)" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border bg-white text-slate-600 border-slate-200">Đúng</button>
-                      <button type="button" onclick="updatePracticeStatementTruth(1, 2, false)" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border bg-rose-600 text-white border-rose-600">Sai</button>
-                    </div>
-                  </div>
-                
-                  <div class="flex flex-wrap sm:flex-nowrap items-center gap-2">
-                    <span class="text-xs font-bold text-slate-700 w-5 shrink-0">d)</span>
-                    <input type="text" value="$P(A \cup B) = 0,8$" placeholder="Nội dung mệnh đề d..." onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeStatementText(1, 3, v))" onchange="updatePracticeStatementText(1, 3, this.value)" class="flex-1 min-w-[180px] px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50/70 text-xs">
-                    <div class="flex items-center gap-1 shrink-0">
-                      <button type="button" onclick="updatePracticeStatementTruth(1, 3, true)" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border bg-emerald-600 text-white border-emerald-600">Đúng</button>
-                      <button type="button" onclick="updatePracticeStatementTruth(1, 3, false)" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border bg-white text-slate-600 border-slate-200">Sai</button>
-                    </div>
-                  </div>
-                
-              </div>
-              <input type="text" value="$P(\overline{A}) = 1 - 0,4 = 0,6$; $P(\overline{B}) = 1 - 0,8 = 0,2$ (Đúng). $P(A|B) = P(A \cap B) / P(B) = 0,4 / 0,8 = 0,5$ (Sai - kết quả là 0,5, không phải 1/2? À, 1/2 là 0,5, vậy câu này Đúng). $P(B|A) = P(A \cap B) / P(A) = 0,4 / 0,4 = 1$ (Sai). $P(A \cup B) = P(A) + P(B) - P(A \cap B) = 0,4 + 0,8 - 0,4 = 0,8$ (Đúng)." placeholder="Giải thích đáp án..." onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeQuestion(1, 'explanation', v))" onchange="updatePracticeQuestion(1, 'explanation', this.value)" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-600">
-            </div>
-            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
-              <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-slate-500">
-                <div class="flex items-center gap-2">
-                  <span class="font-bold text-slate-700">Câu hỏi #3</span>
-                  <select onchange="changePracticeQuestionType(2, this.value)" class="px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700">
-                    <option value="mcq">Trắc nghiệm A/B/C/D</option>
-                    <option value="true_false">Đúng / Sai (4 ý a,b,c,d)</option>
-                    <option value="short_answer" selected="">Trắc nghiệm trả lời ngắn</option>
-                  </select>
-                </div>
-                <button onclick="removePracticeQuestion(2)" class="text-rose-600 hover:underline">Xóa</button>
-              </div>
-
-              <div onpaste="handlePracticeImagePaste(event, 2)" class="p-2.5 rounded-lg border border-dashed border-slate-300 bg-white space-y-2">
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                  <span class="text-[11px] font-semibold text-slate-600">🖼️ Ảnh đề bài (thay cho hoặc kèm đề chữ — dán Ctrl+V vào đây)</span>
-                  <div class="flex items-center gap-2">
-                    <label class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-semibold cursor-pointer">
-                      Tải ảnh lên
-                      <input type="file" accept="image/*" class="hidden" onchange="uploadPracticeQuestionImage(2, event)">
-                    </label>
-                    
-                  </div>
-                </div>
-                
-              </div>
-
-              <textarea rows="2" placeholder="Nhập đề bài (dán công thức NotebookLM hoặc Ctrl+V dán ảnh)..." onpaste="handlePracticeTextOrImagePaste(event, 2)" onchange="updatePracticeQuestion(2, 'question', this.value)" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium">Cho đa giác đều có 60 đỉnh. Số lượng tam giác đều có thể tạo thành từ 60 đỉnh đó là:</textarea>
-              
-              <div class="bg-white p-3 rounded-xl border border-emerald-200/80 space-y-1.5">
-                <label class="block text-[11px] font-bold text-emerald-800">Đáp án đúng (Trả lời ngắn):</label>
-                <input type="text" value="20" onchange="updatePracticeQuestion(2, 'shortAnswer', this.value)" placeholder="VD: 3,5 hoặc -12 (hoặc ngăn cách nhiều đáp án bằng dấu | )" class="w-full px-3 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50/40 text-xs font-semibold text-slate-900">
-              </div>
-              <input type="text" value="Số đỉnh là $n=60$. Một tam giác đều có các đỉnh cách đều nhau $60/3 = 20$ đơn vị trên đường tròn ngoại tiếp. Ta có 20 tam giác đều như vậy." placeholder="Giải thích đáp án..." onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeQuestion(2, 'explanation', v))" onchange="updatePracticeQuestion(2, 'explanation', this.value)" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-600">
-            </div>
-            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
-              <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-slate-500">
-                <div class="flex items-center gap-2">
-                  <span class="font-bold text-slate-700">Câu hỏi #4</span>
-                  <select onchange="changePracticeQuestionType(3, this.value)" class="px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700">
-                    <option value="mcq" selected="">Trắc nghiệm A/B/C/D</option>
-                    <option value="true_false">Đúng / Sai (4 ý a,b,c,d)</option>
-                    <option value="short_answer">Trắc nghiệm trả lời ngắn</option>
-                  </select>
-                </div>
-                <button onclick="removePracticeQuestion(3)" class="text-rose-600 hover:underline">Xóa</button>
-              </div>
-
-              <div onpaste="handlePracticeImagePaste(event, 3)" class="p-2.5 rounded-lg border border-dashed border-slate-300 bg-white space-y-2">
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                  <span class="text-[11px] font-semibold text-slate-600">🖼️ Ảnh đề bài (thay cho hoặc kèm đề chữ — dán Ctrl+V vào đây)</span>
-                  <div class="flex items-center gap-2">
-                    <label class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-semibold cursor-pointer">
-                      Tải ảnh lên
-                      <input type="file" accept="image/*" class="hidden" onchange="uploadPracticeQuestionImage(3, event)">
-                    </label>
-                    
-                  </div>
-                </div>
-                
-              </div>
-
-              <textarea rows="2" placeholder="Nhập đề bài (dán công thức NotebookLM hoặc Ctrl+V dán ảnh)..." onpaste="handlePracticeTextOrImagePaste(event, 3)" onchange="updatePracticeQuestion(3, 'question', this.value)" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium">Cho 28 cây domino khác nhau, chia đều cho 4 người chơi. Hỏi có bao nhiêu cách chia?</textarea>
-              
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                
-                  <div class="flex items-center gap-1.5">
-                    <input type="radio" name="pt-correct-3" checked="" onchange="updatePracticeQuestion(3, 'correctIndex', 0)">
-                    <span class="text-xs font-bold text-slate-500">A.</span>
-                    <input type="text" value="$\frac{28!}{(7!)^4}$" onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeOption(3, 0, v))" onchange="updatePracticeOption(3, 0, this.value)" class="flex-1 px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs">
-                  </div>
-                
-                  <div class="flex items-center gap-1.5">
-                    <input type="radio" name="pt-correct-3" onchange="updatePracticeQuestion(3, 'correctIndex', 1)">
-                    <span class="text-xs font-bold text-slate-500">B.</span>
-                    <input type="text" value="$\frac{28!}{4!}$" onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeOption(3, 1, v))" onchange="updatePracticeOption(3, 1, this.value)" class="flex-1 px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs">
-                  </div>
-                
-                  <div class="flex items-center gap-1.5">
-                    <input type="radio" name="pt-correct-3" onchange="updatePracticeQuestion(3, 'correctIndex', 2)">
-                    <span class="text-xs font-bold text-slate-500">C.</span>
-                    <input type="text" value="$\frac{28!}{7! \cdot 4}$" onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeOption(3, 2, v))" onchange="updatePracticeOption(3, 2, this.value)" class="flex-1 px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs">
-                  </div>
-                
-                  <div class="flex items-center gap-1.5">
-                    <input type="radio" name="pt-correct-3" onchange="updatePracticeQuestion(3, 'correctIndex', 3)">
-                    <span class="text-xs font-bold text-slate-500">D.</span>
-                    <input type="text" value="$\frac{28!}{7! \cdot 4!}$" onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeOption(3, 3, v))" onchange="updatePracticeOption(3, 3, this.value)" class="flex-1 px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs">
-                  </div>
-                
-              </div>
-              <input type="text" value="Đây là bài toán chia 28 phần tử vào 4 nhóm, mỗi nhóm 7 phần tử. Số cách chia là $C_{28}^7 \cdot C_{21}^7 \cdot C_{14}^7 \cdot C_7^7 = \frac{28!}{7!21!} \cdot \frac{21!}{7!14!} \cdot \frac{14!}{7!7!} \cdot 1 = \frac{28!}{(7!)^4}$." placeholder="Giải thích đáp án..." onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeQuestion(3, 'explanation', v))" onchange="updatePracticeQuestion(3, 'explanation', this.value)" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-600">
-            </div>
-            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
-              <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-slate-500">
-                <div class="flex items-center gap-2">
-                  <span class="font-bold text-slate-700">Câu hỏi #5</span>
-                  <select onchange="changePracticeQuestionType(4, this.value)" class="px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700">
-                    <option value="mcq" selected="">Trắc nghiệm A/B/C/D</option>
-                    <option value="true_false">Đúng / Sai (4 ý a,b,c,d)</option>
-                    <option value="short_answer">Trắc nghiệm trả lời ngắn</option>
-                  </select>
-                </div>
-                <button onclick="removePracticeQuestion(4)" class="text-rose-600 hover:underline">Xóa</button>
-              </div>
-
-              <div onpaste="handlePracticeImagePaste(event, 4)" class="p-2.5 rounded-lg border border-dashed border-slate-300 bg-white space-y-2">
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                  <span class="text-[11px] font-semibold text-slate-600">🖼️ Ảnh đề bài (thay cho hoặc kèm đề chữ — dán Ctrl+V vào đây)</span>
-                  <div class="flex items-center gap-2">
-                    <label class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-semibold cursor-pointer">
-                      Tải ảnh lên
-                      <input type="file" accept="image/*" class="hidden" onchange="uploadPracticeQuestionImage(4, event)">
-                    </label>
-                    
-                  </div>
-                </div>
-                
-              </div>
-
-              <textarea rows="2" placeholder="Nhập đề bài (dán công thức NotebookLM hoặc Ctrl+V dán ảnh)..." onpaste="handlePracticeTextOrImagePaste(event, 4)" onchange="updatePracticeQuestion(4, 'question', this.value)" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium">Tính khoảng biến thiên của mẫu số liệu: 148, 145, 155, 156, 160, 151, 150, 160, 162, 157.</textarea>
-              
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                
-                  <div class="flex items-center gap-1.5">
-                    <input type="radio" name="pt-correct-4" onchange="updatePracticeQuestion(4, 'correctIndex', 0)">
-                    <span class="text-xs font-bold text-slate-500">A.</span>
-                    <input type="text" value="9" onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeOption(4, 0, v))" onchange="updatePracticeOption(4, 0, this.value)" class="flex-1 px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs">
-                  </div>
-                
-                  <div class="flex items-center gap-1.5">
-                    <input type="radio" name="pt-correct-4" checked="" onchange="updatePracticeQuestion(4, 'correctIndex', 1)">
-                    <span class="text-xs font-bold text-slate-500">B.</span>
-                    <input type="text" value="17" onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeOption(4, 1, v))" onchange="updatePracticeOption(4, 1, this.value)" class="flex-1 px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs">
-                  </div>
-                
-                  <div class="flex items-center gap-1.5">
-                    <input type="radio" name="pt-correct-4" onchange="updatePracticeQuestion(4, 'correctIndex', 2)">
-                    <span class="text-xs font-bold text-slate-500">C.</span>
-                    <input type="text" value="14" onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeOption(4, 2, v))" onchange="updatePracticeOption(4, 2, this.value)" class="flex-1 px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs">
-                  </div>
-                
-                  <div class="flex items-center gap-1.5">
-                    <input type="radio" name="pt-correct-4" onchange="updatePracticeQuestion(4, 'correctIndex', 3)">
-                    <span class="text-xs font-bold text-slate-500">D.</span>
-                    <input type="text" value="15" onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeOption(4, 3, v))" onchange="updatePracticeOption(4, 3, this.value)" class="flex-1 px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs">
-                  </div>
-                
-              </div>
-              <input type="text" value="Giá trị lớn nhất là 162, giá trị nhỏ nhất là 145. Khoảng biến thiên $R = 162 - 145 = 17$." placeholder="Giải thích đáp án..." onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeQuestion(4, 'explanation', v))" onchange="updatePracticeQuestion(4, 'explanation', this.value)" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-600">
-            </div>
-            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
-              <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-slate-500">
-                <div class="flex items-center gap-2">
-                  <span class="font-bold text-slate-700">Câu hỏi #6</span>
-                  <select onchange="changePracticeQuestionType(5, this.value)" class="px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700">
-                    <option value="mcq">Trắc nghiệm A/B/C/D</option>
-                    <option value="true_false">Đúng / Sai (4 ý a,b,c,d)</option>
-                    <option value="short_answer" selected="">Trắc nghiệm trả lời ngắn</option>
-                  </select>
-                </div>
-                <button onclick="removePracticeQuestion(5)" class="text-rose-600 hover:underline">Xóa</button>
-              </div>
-
-              <div onpaste="handlePracticeImagePaste(event, 5)" class="p-2.5 rounded-lg border border-dashed border-slate-300 bg-white space-y-2">
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                  <span class="text-[11px] font-semibold text-slate-600">🖼️ Ảnh đề bài (thay cho hoặc kèm đề chữ — dán Ctrl+V vào đây)</span>
-                  <div class="flex items-center gap-2">
-                    <label class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-semibold cursor-pointer">
-                      Tải ảnh lên
-                      <input type="file" accept="image/*" class="hidden" onchange="uploadPracticeQuestionImage(5, event)">
-                    </label>
-                    
-                  </div>
-                </div>
-                
-              </div>
-
-              <textarea rows="2" placeholder="Nhập đề bài (dán công thức NotebookLM hoặc Ctrl+V dán ảnh)..." onpaste="handlePracticeTextOrImagePaste(event, 5)" onchange="updatePracticeQuestion(5, 'question', this.value)" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium">Một quân cá ngựa đặt ở M. Mỗi bước đi, quân cá ngựa có thể đi xuống một ô được nối ở ngay dưới. Tính xác suất để sau 5 bước đi quân cá ngựa đến được C hoặc D.</textarea>
-              
-              <div class="bg-white p-3 rounded-xl border border-emerald-200/80 space-y-1.5">
-                <label class="block text-[11px] font-bold text-emerald-800">Đáp án đúng (Trả lời ngắn):</label>
-                <input type="text" value="10/32" onchange="updatePracticeQuestion(5, 'shortAnswer', this.value)" placeholder="VD: 3,5 hoặc -12 (hoặc ngăn cách nhiều đáp án bằng dấu | )" class="w-full px-3 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50/40 text-xs font-semibold text-slate-900">
-              </div>
-              <input type="text" value="Số cách đi từ M sau 5 bước là $2^5 = 32$. Dựa vào tam giác Pascal, hàng thứ 5 (tính từ đỉnh 0 là hàng 0) có các giá trị $C_5^0, C_5^1, C_5^2, C_5^3, C_5^4, C_5^5$ tương ứng 1, 5, 10, 10, 5, 1. Tại C và D là $10+10=20$. Xác suất $20/32 = 5/8$." placeholder="Giải thích đáp án..." onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeQuestion(5, 'explanation', v))" onchange="updatePracticeQuestion(5, 'explanation', this.value)" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-600">
-            </div>
-            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
-              <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-slate-500">
-                <div class="flex items-center gap-2">
-                  <span class="font-bold text-slate-700">Câu hỏi #7</span>
-                  <select onchange="changePracticeQuestionType(6, this.value)" class="px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700">
-                    <option value="mcq" selected="">Trắc nghiệm A/B/C/D</option>
-                    <option value="true_false">Đúng / Sai (4 ý a,b,c,d)</option>
-                    <option value="short_answer">Trắc nghiệm trả lời ngắn</option>
-                  </select>
-                </div>
-                <button onclick="removePracticeQuestion(6)" class="text-rose-600 hover:underline">Xóa</button>
-              </div>
-
-              <div onpaste="handlePracticeImagePaste(event, 6)" class="p-2.5 rounded-lg border border-dashed border-slate-300 bg-white space-y-2">
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                  <span class="text-[11px] font-semibold text-slate-600">🖼️ Ảnh đề bài (thay cho hoặc kèm đề chữ — dán Ctrl+V vào đây)</span>
-                  <div class="flex items-center gap-2">
-                    <label class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-semibold cursor-pointer">
-                      Tải ảnh lên
-                      <input type="file" accept="image/*" class="hidden" onchange="uploadPracticeQuestionImage(6, event)">
-                    </label>
-                    
-                  </div>
-                </div>
-                
-              </div>
-
-              <textarea rows="2" placeholder="Nhập đề bài (dán công thức NotebookLM hoặc Ctrl+V dán ảnh)..." onpaste="handlePracticeTextOrImagePaste(event, 6)" onchange="updatePracticeQuestion(6, 'question', this.value)" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium">Có 4 viên bi đỏ và 3 viên bi xanh. Lấy ngẫu nhiên 3 viên. Tính xác suất trong 3 viên có 2 viên màu đỏ.</textarea>
-              
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                
-                  <div class="flex items-center gap-1.5">
-                    <input type="radio" name="pt-correct-6" checked="" onchange="updatePracticeQuestion(6, 'correctIndex', 0)">
-                    <span class="text-xs font-bold text-slate-500">A.</span>
-                    <input type="text" value="18/35" onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeOption(6, 0, v))" onchange="updatePracticeOption(6, 0, this.value)" class="flex-1 px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs">
-                  </div>
-                
-                  <div class="flex items-center gap-1.5">
-                    <input type="radio" name="pt-correct-6" onchange="updatePracticeQuestion(6, 'correctIndex', 1)">
-                    <span class="text-xs font-bold text-slate-500">B.</span>
-                    <input type="text" value="6/35" onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeOption(6, 1, v))" onchange="updatePracticeOption(6, 1, this.value)" class="flex-1 px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs">
-                  </div>
-                
-                  <div class="flex items-center gap-1.5">
-                    <input type="radio" name="pt-correct-6" onchange="updatePracticeQuestion(6, 'correctIndex', 2)">
-                    <span class="text-xs font-bold text-slate-500">C.</span>
-                    <input type="text" value="9/35" onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeOption(6, 2, v))" onchange="updatePracticeOption(6, 2, this.value)" class="flex-1 px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs">
-                  </div>
-                
-                  <div class="flex items-center gap-1.5">
-                    <input type="radio" name="pt-correct-6" onchange="updatePracticeQuestion(6, 'correctIndex', 3)">
-                    <span class="text-xs font-bold text-slate-500">D.</span>
-                    <input type="text" value="8/35" onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeOption(6, 3, v))" onchange="updatePracticeOption(6, 3, this.value)" class="flex-1 px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs">
-                  </div>
-                
-              </div>
-              <input type="text" value="Số cách chọn 3 viên từ 7 viên là $C_7^3 = 35$. Số cách chọn 2 đỏ 1 xanh là $C_4^2 \cdot C_3^1 = 6 \cdot 3 = 18$. Xác suất là $18/35$." placeholder="Giải thích đáp án..." onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeQuestion(6, 'explanation', v))" onchange="updatePracticeQuestion(6, 'explanation', this.value)" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-600">
-            </div>
-            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
-              <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-slate-500">
-                <div class="flex items-center gap-2">
-                  <span class="font-bold text-slate-700">Câu hỏi #8</span>
-                  <select onchange="changePracticeQuestionType(7, this.value)" class="px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700">
-                    <option value="mcq">Trắc nghiệm A/B/C/D</option>
-                    <option value="true_false">Đúng / Sai (4 ý a,b,c,d)</option>
-                    <option value="short_answer" selected="">Trắc nghiệm trả lời ngắn</option>
-                  </select>
-                </div>
-                <button onclick="removePracticeQuestion(7)" class="text-rose-600 hover:underline">Xóa</button>
-              </div>
-
-              <div onpaste="handlePracticeImagePaste(event, 7)" class="p-2.5 rounded-lg border border-dashed border-slate-300 bg-white space-y-2">
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                  <span class="text-[11px] font-semibold text-slate-600">🖼️ Ảnh đề bài (thay cho hoặc kèm đề chữ — dán Ctrl+V vào đây)</span>
-                  <div class="flex items-center gap-2">
-                    <label class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-semibold cursor-pointer">
-                      Tải ảnh lên
-                      <input type="file" accept="image/*" class="hidden" onchange="uploadPracticeQuestionImage(7, event)">
-                    </label>
-                    
-                  </div>
-                </div>
-                
-              </div>
-
-              <textarea rows="2" placeholder="Nhập đề bài (dán công thức NotebookLM hoặc Ctrl+V dán ảnh)..." onpaste="handlePracticeTextOrImagePaste(event, 7)" onchange="updatePracticeQuestion(7, 'question', this.value)" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium">Cho tập hợp $A = \{2;3;5;8\}$. Có thể lập bao nhiêu số tự nhiên $x$ sao cho $400 &lt; x &lt; 600$?</textarea>
-              
-              <div class="bg-white p-3 rounded-xl border border-emerald-200/80 space-y-1.5">
-                <label class="block text-[11px] font-bold text-emerald-800">Đáp án đúng (Trả lời ngắn):</label>
-                <input type="text" value="0" onchange="updatePracticeQuestion(7, 'shortAnswer', this.value)" placeholder="VD: 3,5 hoặc -12 (hoặc ngăn cách nhiều đáp án bằng dấu | )" class="w-full px-3 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50/40 text-xs font-semibold text-slate-900">
-              </div>
-              <input type="text" value="Các số có dạng $\overline{abc}$. Để $400 &lt; x &lt; 600$, chữ số hàng trăm $a$ phải là 5. Tập $A$ chỉ có chữ số 5, nên chỉ có thể lập số bắt đầu bằng 5. Tuy nhiên với $b, c \in \{2,3,5,8\}$, các số đều thỏa mãn $500 &lt; x &lt; 600$. Có $4 \cdot 4 = 16$ số (nhưng đề hỏi $400&lt;x&lt;600$, nếu xét số có 3 chữ số là $4^3=64$ hoặc theo đề bài cụ thể)." placeholder="Giải thích đáp án..." onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeQuestion(7, 'explanation', v))" onchange="updatePracticeQuestion(7, 'explanation', this.value)" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-600">
-            </div>
-            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
-              <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-slate-500">
-                <div class="flex items-center gap-2">
-                  <span class="font-bold text-slate-700">Câu hỏi #9</span>
-                  <select onchange="changePracticeQuestionType(8, this.value)" class="px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700">
-                    <option value="mcq" selected="">Trắc nghiệm A/B/C/D</option>
-                    <option value="true_false">Đúng / Sai (4 ý a,b,c,d)</option>
-                    <option value="short_answer">Trắc nghiệm trả lời ngắn</option>
-                  </select>
-                </div>
-                <button onclick="removePracticeQuestion(8)" class="text-rose-600 hover:underline">Xóa</button>
-              </div>
-
-              <div onpaste="handlePracticeImagePaste(event, 8)" class="p-2.5 rounded-lg border border-dashed border-slate-300 bg-white space-y-2">
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                  <span class="text-[11px] font-semibold text-slate-600">🖼️ Ảnh đề bài (thay cho hoặc kèm đề chữ — dán Ctrl+V vào đây)</span>
-                  <div class="flex items-center gap-2">
-                    <label class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-semibold cursor-pointer">
-                      Tải ảnh lên
-                      <input type="file" accept="image/*" class="hidden" onchange="uploadPracticeQuestionImage(8, event)">
-                    </label>
-                    
-                  </div>
-                </div>
-                
-              </div>
-
-              <textarea rows="2" placeholder="Nhập đề bài (dán công thức NotebookLM hoặc Ctrl+V dán ảnh)..." onpaste="handlePracticeTextOrImagePaste(event, 8)" onchange="updatePracticeQuestion(8, 'question', this.value)" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium">Trong không gian cho 4 điểm A, B, C, D. Từ các điểm trên ta lập các vectơ khác vectơ không. Hỏi có thể có bao nhiêu vectơ?</textarea>
-              
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                
-                  <div class="flex items-center gap-1.5">
-                    <input type="radio" name="pt-correct-8" onchange="updatePracticeQuestion(8, 'correctIndex', 0)">
-                    <span class="text-xs font-bold text-slate-500">A.</span>
-                    <input type="text" value="6" onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeOption(8, 0, v))" onchange="updatePracticeOption(8, 0, this.value)" class="flex-1 px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs">
-                  </div>
-                
-                  <div class="flex items-center gap-1.5">
-                    <input type="radio" name="pt-correct-8" onchange="updatePracticeQuestion(8, 'correctIndex', 1)">
-                    <span class="text-xs font-bold text-slate-500">B.</span>
-                    <input type="text" value="10" onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeOption(8, 1, v))" onchange="updatePracticeOption(8, 1, this.value)" class="flex-1 px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs">
-                  </div>
-                
-                  <div class="flex items-center gap-1.5">
-                    <input type="radio" name="pt-correct-8" checked="" onchange="updatePracticeQuestion(8, 'correctIndex', 2)">
-                    <span class="text-xs font-bold text-slate-500">C.</span>
-                    <input type="text" value="12" onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeOption(8, 2, v))" onchange="updatePracticeOption(8, 2, this.value)" class="flex-1 px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs">
-                  </div>
-                
-                  <div class="flex items-center gap-1.5">
-                    <input type="radio" name="pt-correct-8" onchange="updatePracticeQuestion(8, 'correctIndex', 3)">
-                    <span class="text-xs font-bold text-slate-500">D.</span>
-                    <input type="text" value="8" onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeOption(8, 3, v))" onchange="updatePracticeOption(8, 3, this.value)" class="flex-1 px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs">
-                  </div>
-                
-              </div>
-              <input type="text" value="Số cách chọn 2 điểm từ 4 điểm có thứ tự là $A_4^2 = 4 \cdot 3 = 12$." placeholder="Giải thích đáp án..." onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeQuestion(8, 'explanation', v))" onchange="updatePracticeQuestion(8, 'explanation', this.value)" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-600">
-            </div>
-            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
-              <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-slate-500">
-                <div class="flex items-center gap-2">
-                  <span class="font-bold text-slate-700">Câu hỏi #10</span>
-                  <select onchange="changePracticeQuestionType(9, this.value)" class="px-2 py-1 rounded-lg border border-slate-200 bg-white text-xs font-semibold text-slate-700">
-                    <option value="mcq">Trắc nghiệm A/B/C/D</option>
-                    <option value="true_false">Đúng / Sai (4 ý a,b,c,d)</option>
-                    <option value="short_answer" selected="">Trắc nghiệm trả lời ngắn</option>
-                  </select>
-                </div>
-                <button onclick="removePracticeQuestion(9)" class="text-rose-600 hover:underline">Xóa</button>
-              </div>
-
-              <div onpaste="handlePracticeImagePaste(event, 9)" class="p-2.5 rounded-lg border border-dashed border-slate-300 bg-white space-y-2">
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                  <span class="text-[11px] font-semibold text-slate-600">🖼️ Ảnh đề bài (thay cho hoặc kèm đề chữ — dán Ctrl+V vào đây)</span>
-                  <div class="flex items-center gap-2">
-                    <label class="px-2.5 py-1 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-semibold cursor-pointer">
-                      Tải ảnh lên
-                      <input type="file" accept="image/*" class="hidden" onchange="uploadPracticeQuestionImage(9, event)">
-                    </label>
-                    
-                  </div>
-                </div>
-                
-              </div>
-
-              <textarea rows="2" placeholder="Nhập đề bài (dán công thức NotebookLM hoặc Ctrl+V dán ảnh)..." onpaste="handlePracticeTextOrImagePaste(event, 9)" onchange="updatePracticeQuestion(9, 'question', this.value)" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-medium">Gieo một con xúc xắc cân đối và đồng chất hai lần. Tính xác suất để lần đầu gieo được mặt 1 chấm, biết rằng tổng số chấm trong hai lần gieo không vượt quá 3.</textarea>
-              
-              <div class="bg-white p-3 rounded-xl border border-emerald-200/80 space-y-1.5">
-                <label class="block text-[11px] font-bold text-emerald-800">Đáp án đúng (Trả lời ngắn):</label>
-                <input type="text" value="0.67" onchange="updatePracticeQuestion(9, 'shortAnswer', this.value)" placeholder="VD: 3,5 hoặc -12 (hoặc ngăn cách nhiều đáp án bằng dấu | )" class="w-full px-3 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50/40 text-xs font-semibold text-slate-900">
-              </div>
-              <input type="text" value="Các cặp $(a, b)$ có $a+b \le 3$: $(1,1), (1,2), (2,1)$. Số phần tử không gian mẫu rút gọn là 3. Trong đó lần đầu ra 1 là: $(1,1), (1,2)$ (có 2 kết quả). Xác suất $2/3 \approx 0,67$." placeholder="Giải thích đáp án..." onpaste="handleInputSmartPaste(event, v =&gt; updatePracticeQuestion(9, 'explanation', v))" onchange="updatePracticeQuestion(9, 'explanation', this.value)" class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-600">
-            </div></div>
+            <div id="teacherPracticeQuestionsList" class="space-y-4 max-h-[640px] overflow-y-auto pr-1"></div>
           </div>
         </div>
 
@@ -1564,7 +791,7 @@
                   <span class="font-bold text-indigo-900">👑 Số Thầy giáo (Admin): <span class="font-mono">0838600276</span></span>
                   <span class="px-2 py-0.5 rounded bg-indigo-600 text-white text-[10px] font-semibold">Full 2 Tab</span>
                 </div>
-                <div class="text-indigo-700">Mặc định mở cả tab Học sinh &amp; Giáo viên, không thể xóa.</div>
+                <div class="text-indigo-700">Mặc định mở cả tab Học sinh & Giáo viên, không thể xóa.</div>
               </div>
 
               <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5">
@@ -1598,7 +825,7 @@
     <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl space-y-5 text-center">
       <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto text-xl">🔒</div>
       <div>
-        <h3 id="pinModalTitle" class="font-bold text-slate-900 text-lg">Hoàng Lê Vy - Toán 11</h3>
+        <h3 id="pinModalTitle" class="font-bold text-slate-900 text-lg"></h3>
         <p class="text-xs text-slate-500 mt-1">Nhập mã 4 số thầy Hùng gửi để mở thư mục này.</p>
       </div>
       <div class="flex justify-center gap-2.5">
@@ -2074,7 +1301,8 @@ $$S_n = \\frac{n(u_1 + u_n)}{2}$$`,
       loggedInPhone: null, role: 'student', courses: [], authorizedPhones: [], unlockedCourseIds: [],
       activeStudentCourseId: null, studentModule: 'hub', activeTheoryFolderId: null,
       flashcardIndex: 0, flashcardFlipped: false, studentDriveFolderId: null,
-      practiceScreen: 'mode', practiceModeTitle: '', activeQuizQuestions: [], quizAnswers: {}, quizFilterWrongOnly: false,
+      practiceScreen: 'mode', practicePrevScreen: 'mode', practiceModeTitle: '',
+      mixedSelectedTopicIds: [], activeQuizQuestions: [], quizAnswers: {}, quizFilterWrongOnly: false,
       pendingUnlockCourseId: null, pendingUrlCourseId: null,
       teacherCourseId: null, teacherTab: 'theory', teacherTheoryFolderId: null, teacherDriveFolderId: null, teacherPracticeTopicId: null,
       theoryLayout: 'split',
@@ -2318,7 +1546,7 @@ $$S_n = \\frac{n(u_1 + u_n)}{2}$$`,
         if (!c.theoryFolders.some(f => f.id === state.activeTheoryFolderId)) state.activeTheoryFolderId = c.theoryFolders[0]?.id || null;
         state.flashcardIndex = 0; state.flashcardFlipped = false;
       } else if (mod === 'docs') { state.studentDriveFolderId = null; document.getElementById('driveSearchInput').value = ''; }
-      else if (mod === 'practice') { state.practiceScreen = 'mode'; }
+      else if (mod === 'practice') { state.practiceScreen = 'mode'; state.practicePrevScreen = 'mode'; }
       renderStudentCourseWorkspace();
     }
 
@@ -2473,28 +1701,49 @@ $$S_n = \\frac{n(u_1 + u_n)}{2}$$`,
 
     // Student Module 3: Practice
     function handlePracticeTopBack() {
-      if (state.practiceScreen === 'mode') backToCourseHub();
-      else { state.practiceScreen = 'mode'; renderStudentPractice(getActiveStudentCourse()); }
+      if (state.practiceScreen === 'mode') {
+        backToCourseHub();
+      } else if (state.practiceScreen === 'quiz' && state.practicePrevScreen === 'mixedSetup') {
+        state.practiceScreen = 'mixedSetup';
+        renderStudentPractice(getActiveStudentCourse());
+      } else {
+        state.practiceScreen = 'mode';
+        renderStudentPractice(getActiveStudentCourse());
+      }
     }
     function renderStudentPractice(course) {
       document.getElementById('practiceModeSelector').classList.toggle('hidden', state.practiceScreen !== 'mode');
       document.getElementById('practiceTopicListScreen').classList.toggle('hidden', state.practiceScreen !== 'topicPicker');
+      document.getElementById('practiceMixedSetupScreen').classList.toggle('hidden', state.practiceScreen !== 'mixedSetup');
       document.getElementById('practiceQuizScreen').classList.toggle('hidden', state.practiceScreen !== 'quiz');
 
       const allCount = (course.practiceTopics || []).reduce((acc, t) => acc + (t.questions?.length || 0), 0);
-      document.getElementById('mixedQuizTotalHint').textContent = `Trộn tất cả ${allCount} câu hỏi →`;
+      document.getElementById('mixedQuizTotalHint').textContent = `Tùy chỉnh đề trộn (${allCount} câu) →`;
 
       const backLabel = document.getElementById('practiceBackBtnLabel');
       const titleEl = document.getElementById('practiceHeaderTitle');
       const scoreBadge = document.getElementById('quizScoreBadge');
 
       if (state.practiceScreen === 'mode') {
-        backLabel.textContent = '← Quay lại menu khóa học'; titleEl.textContent = 'Luyện tập — Chọn chế độ'; scoreBadge.classList.add('hidden');
+        backLabel.textContent = '← Quay lại menu khóa học';
+        titleEl.textContent = 'Luyện tập — Chọn chế độ';
+        scoreBadge.classList.add('hidden');
       } else if (state.practiceScreen === 'topicPicker') {
-        backLabel.textContent = '← Chọn lại chế độ luyện tập'; titleEl.textContent = 'Ôn theo chủ đề'; scoreBadge.classList.add('hidden');
+        backLabel.textContent = '← Chọn lại chế độ luyện tập';
+        titleEl.textContent = 'Ôn theo chủ đề';
+        scoreBadge.classList.add('hidden');
         renderPracticeTopicsGrid(course);
+      } else if (state.practiceScreen === 'mixedSetup') {
+        backLabel.textContent = '← Chọn lại chế độ luyện tập';
+        titleEl.textContent = 'Trộn bài tổng hợp — Chọn chủ đề & số câu';
+        scoreBadge.classList.add('hidden');
+        renderMixedQuizSetup(course);
       } else {
-        backLabel.textContent = '← Chọn lại chế độ luyện tập'; titleEl.textContent = state.practiceModeTitle; scoreBadge.classList.remove('hidden');
+        backLabel.textContent = state.practicePrevScreen === 'mixedSetup'
+          ? '← Quay lại cấu hình đề trộn'
+          : '← Chọn lại chế độ luyện tập';
+        titleEl.textContent = state.practiceModeTitle;
+        scoreBadge.classList.remove('hidden');
         renderQuizQuestions();
       }
     }
@@ -2517,18 +1766,208 @@ $$S_n = \\frac{n(u_1 + u_n)}{2}$$`,
       if (!topic || !topic.questions.length) return alert('Chủ đề này chưa có câu hỏi nào!');
       state.practiceModeTitle = `Ôn chủ đề: ${topic.name}`;
       state.activeQuizQuestions = topic.questions.map(q => ({ ...structuredClone(q), topicName: topic.name }));
-      state.quizAnswers = {}; state.quizFilterWrongOnly = false; state.practiceScreen = 'quiz';
+      state.quizAnswers = {}; state.quizFilterWrongOnly = false;
+      state.practicePrevScreen = 'topicPicker'; state.practiceScreen = 'quiz';
       renderStudentPractice(getActiveStudentCourse());
     }
+
+    // ==================== MIXED QUIZ SETUP & EVEN DISTRIBUTION ====================
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function openMixedQuizSetup() {
+      const course = getActiveStudentCourse();
+      const nonEmptyTopics = (course.practiceTopics || []).filter(t => (t.questions || []).length > 0);
+      if (!nonEmptyTopics.length) return alert('Chưa có câu hỏi nào để trộn bài!');
+
+      state.mixedSelectedTopicIds = nonEmptyTopics.map(t => t.id);
+      state.practiceScreen = 'mixedSetup';
+      renderStudentPractice(course);
+
+      const totalAvail = nonEmptyTopics.reduce((sum, t) => sum + t.questions.length, 0);
+      const inp = document.getElementById('mixedQuestionCountInput');
+      if (inp) {
+        inp.value = Math.min(10, totalAvail);
+        updateMixedSetupSummary();
+        setTimeout(() => { inp.focus(); inp.select(); }, 50);
+      }
+    }
+
     function startMixedQuiz() {
-      let pool = [];
-      (getActiveStudentCourse().practiceTopics || []).forEach(t => (t.questions || []).forEach(q => pool.push({ ...structuredClone(q), topicName: t.name })));
-      if (!pool.length) return alert('Chưa có câu hỏi nào để trộn bài!');
-      for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
-      state.practiceModeTitle = `Trộn bài tổng hợp (${pool.length} câu)`;
-      state.activeQuizQuestions = pool; state.quizAnswers = {}; state.quizFilterWrongOnly = false; state.practiceScreen = 'quiz';
-      renderStudentPractice(getActiveStudentCourse());
+      openMixedQuizSetup();
     }
+
+    function renderMixedQuizSetup(course = getActiveStudentCourse()) {
+      const topics = course.practiceTopics || [];
+      const container = document.getElementById('mixedTopicsCheckboxes');
+      container.innerHTML = topics.map(t => {
+        const qCount = (t.questions || []).length;
+        const disabled = qCount === 0;
+        const checked = !disabled && state.mixedSelectedTopicIds.includes(t.id);
+        return `
+          <label class="flex items-center justify-between gap-3 p-3.5 rounded-xl border transition select-none ${disabled ? 'opacity-50 cursor-not-allowed bg-slate-50 border-slate-200' : (checked ? 'cursor-pointer border-emerald-500 bg-emerald-50/50 shadow-sm' : 'cursor-pointer border-slate-200 bg-white hover:border-emerald-300')}">
+            <div class="flex items-center gap-3 min-w-0">
+              <input type="checkbox" ${checked ? 'checked' : ''} ${disabled ? 'disabled' : ''} onchange="toggleMixedTopic('${t.id}')" class="w-4 h-4 accent-emerald-600 rounded shrink-0">
+              <span class="text-sm font-semibold text-slate-800 truncate">${escapeHtml(t.name)}</span>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full shrink-0 ${checked ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'}">${qCount} câu</span>
+          </label>
+        `;
+      }).join('');
+      updateMixedSetupSummary();
+    }
+
+    function toggleMixedTopic(topicId) {
+      if (state.mixedSelectedTopicIds.includes(topicId)) {
+        state.mixedSelectedTopicIds = state.mixedSelectedTopicIds.filter(id => id !== topicId);
+      } else {
+        state.mixedSelectedTopicIds.push(topicId);
+      }
+      renderMixedQuizSetup();
+    }
+
+    function selectAllMixedTopics(selectAll) {
+      const course = getActiveStudentCourse();
+      state.mixedSelectedTopicIds = selectAll
+        ? (course.practiceTopics || []).filter(t => (t.questions || []).length > 0).map(t => t.id)
+        : [];
+      renderMixedQuizSetup(course);
+    }
+
+    function setMixedQuestionCount(val) {
+      const inp = document.getElementById('mixedQuestionCountInput');
+      if (!inp) return;
+      inp.value = val;
+      updateMixedSetupSummary();
+      inp.focus();
+    }
+
+    function updateMixedSetupSummary() {
+      const course = getActiveStudentCourse();
+      if (!course) return;
+      const selectedTopics = (course.practiceTopics || []).filter(
+        t => state.mixedSelectedTopicIds.includes(t.id) && (t.questions || []).length > 0
+      );
+      const totalAvail = selectedTopics.reduce((sum, t) => sum + t.questions.length, 0);
+
+      const badge = document.getElementById('mixedSelectedTopicsBadge');
+      if (badge) badge.textContent = `Đã chọn ${selectedTopics.length} chủ đề (${totalAvail} câu khả dụng)`;
+
+      const inp = document.getElementById('mixedQuestionCountInput');
+      if (inp) {
+        inp.max = totalAvail > 0 ? totalAvail : 1;
+        if (totalAvail > 0 && Number(inp.value) > totalAvail) inp.value = totalAvail;
+      }
+
+      const presetRow = document.getElementById('mixedQuickPresetRow');
+      if (presetRow) {
+        if (totalAvail > 0) {
+          const presets = [5, 10, 15, 20, 30].filter(n => n < totalAvail);
+          presetRow.innerHTML = `<span class="text-[11px] text-slate-400 mr-1">Chọn nhanh:</span>` +
+            presets.map(n => `<button type="button" onclick="setMixedQuestionCount(${n})" class="px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-emerald-100 text-slate-700 hover:text-emerald-800 text-xs font-semibold transition">${n} câu</button>`).join('') +
+            `<button type="button" onclick="setMixedQuestionCount(${totalAvail})" class="px-2.5 py-1 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold transition">Tất cả (${totalAvail} câu)</button>`;
+        } else {
+          presetRow.innerHTML = '';
+        }
+      }
+
+      const preview = document.getElementById('mixedDistributionPreview');
+      if (!preview) return;
+      if (!selectedTopics.length) {
+        preview.textContent = '⚠️ Vui lòng chọn ít nhất 1 chủ đề ở trên.';
+        return;
+      }
+      const req = parseInt(inp?.value || '0', 10);
+      if (!req || req <= 0) {
+        preview.textContent = `Nhập số câu từ 1 đến ${totalAvail} rồi nhấn Enter.`;
+        return;
+      }
+      const actual = Math.min(req, totalAvail);
+      const perTopic = Math.floor(actual / selectedTopics.length);
+      const rem = actual % selectedTopics.length;
+      const quotaText = rem === 0
+        ? `mỗi chủ đề đúng ${perTopic} câu`
+        : `mỗi chủ đề ${perTopic}–${perTopic + 1} câu`;
+      preview.innerHTML = `✨ Dự kiến: Bốc ngẫu nhiên <strong>${actual} câu</strong> từ <strong>${selectedTopics.length} chủ đề</strong> (chia đều: ${quotaText}).`;
+    }
+
+    function pickEvenlyDistributedQuestions(selectedTopics, totalRequested) {
+      const buckets = selectedTopics
+        .map(t => ({
+          topicName: t.name,
+          pool: shuffleArray((t.questions || []).map(q => ({ ...structuredClone(q), topicName: t.name })))
+        }))
+        .filter(b => b.pool.length > 0);
+
+      if (!buckets.length) return [];
+      const totalAvailable = buckets.reduce((sum, b) => sum + b.pool.length, 0);
+      let remaining = Math.min(totalRequested, totalAvailable);
+      const picked = [];
+
+      while (remaining > 0) {
+        const active = buckets.filter(b => b.pool.length > 0);
+        if (!active.length) break;
+
+        const base = Math.floor(remaining / active.length);
+        if (base > 0) {
+          let takenThisRound = 0;
+          active.forEach(b => {
+            const take = Math.min(base, b.pool.length);
+            picked.push(...b.pool.splice(0, take));
+            takenThisRound += take;
+          });
+          remaining -= takenThisRound;
+        } else {
+          const shuffledActive = shuffleArray(active);
+          for (let i = 0; i < shuffledActive.length && remaining > 0; i++) {
+            picked.push(shuffledActive[i].pool.shift());
+            remaining--;
+          }
+        }
+      }
+
+      return shuffleArray(picked);
+    }
+
+    function startConfiguredMixedQuiz() {
+      const course = getActiveStudentCourse();
+      const selectedTopics = (course.practiceTopics || []).filter(
+        t => state.mixedSelectedTopicIds.includes(t.id) && (t.questions || []).length > 0
+      );
+      if (!selectedTopics.length) return alert('Bạn hãy chọn ít nhất 1 chủ đề có câu hỏi nhé!');
+
+      const totalAvail = selectedTopics.reduce((sum, t) => sum + t.questions.length, 0);
+      const inp = document.getElementById('mixedQuestionCountInput');
+      const requested = parseInt(inp?.value || '0', 10);
+
+      if (!requested || requested <= 0) {
+        alert('Vui lòng nhập số câu muốn làm (tối thiểu 1 câu)!');
+        inp?.focus();
+        return;
+      }
+      if (requested > totalAvail) {
+        alert(`Các chủ đề đã chọn chỉ có tối đa ${totalAvail} câu hỏi. Vui lòng nhập từ 1 đến ${totalAvail}!`);
+        inp?.focus();
+        inp?.select();
+        return;
+      }
+
+      const pool = pickEvenlyDistributedQuestions(selectedTopics, requested);
+      state.practiceModeTitle = `Trộn bài tổng hợp (${pool.length} câu • ${selectedTopics.length} chủ đề)`;
+      state.activeQuizQuestions = pool;
+      state.quizAnswers = {};
+      state.quizFilterWrongOnly = false;
+      state.practicePrevScreen = 'mixedSetup';
+      state.practiceScreen = 'quiz';
+      renderStudentPractice(course);
+    }
+
     const TF_LABELS = ['a', 'b', 'c', 'd'];
     function getQuestionType(q) {
       if (q && (q.type === 'true_false' || q.type === 'short_answer' || q.type === 'mcq')) return q.type;
@@ -3662,11 +3101,11 @@ ${mathFormattingRule}`;
     }
     function closeDocModal() { document.getElementById('docModal').classList.add('hidden'); }
     function escapeHtml(str) {
-      return String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      return String(str ?? '').replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"').replace(/'/g, ''');
     }
 
     init();
   </script>
 
-
-</body></html>
+</body>
+</html>
