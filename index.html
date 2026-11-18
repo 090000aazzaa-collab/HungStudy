@@ -406,7 +406,10 @@
                   <h2 id="practiceHeaderTitle" class="text-base sm:text-lg font-bold text-slate-900">Luyện tập — Chọn chế độ</h2>
                 </div>
               </div>
-              <div id="quizScoreBadge" class="text-xs sm:text-sm font-semibold px-3.5 py-1.5 rounded-full bg-indigo-50 text-indigo-700 hidden">Đúng: 0 / 10</div>
+              <div class="flex items-center gap-2">
+                <div id="quizTimerBadge" class="hidden text-xs sm:text-sm font-mono font-bold px-3.5 py-1.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200">⏱️ 00:00</div>
+                <div id="quizScoreBadge" class="text-xs sm:text-sm font-semibold px-3.5 py-1.5 rounded-full bg-indigo-50 text-indigo-700 hidden">Đúng: 0 / 10</div>
+              </div>
             </div>
 
             <div id="practiceModeSelector" class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -445,7 +448,18 @@
             </div>
 
                         <div id="practiceMixedConfigScreen" class="hidden space-y-5">
+              <!-- THANH CHỌN NHANH FORM CHUẨN (ẨN/HIỆN THEO CÀI ĐẶT GIÁO VIÊN) -->
+              <div id="mixedPresetsCard" class="bg-white rounded-2xl border border-indigo-200 p-4 sm:p-5 shadow-sm space-y-3">
+                <div>
+                  <h3 class="font-bold text-slate-900 text-sm sm:text-base">Chọn nhanh cấu trúc đề thi chuẩn</h3>
+                  <p class="text-xs text-slate-500">Các Form thi thử được thầy Hùng bật cho khóa học này</p>
+                </div>
+                <div id="mixedPresetsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5"></div>
+                <div id="mixedPresetNotice" class="hidden text-xs font-medium px-3 py-2 rounded-lg bg-slate-100 text-slate-700"></div>
+              </div>
+
               <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                <!-- Cột trái: Chọn chủ đề nguồn -->
                 <div class="lg:col-span-6 bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3">
                   <div class="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-100">
                     <div>
@@ -460,20 +474,26 @@
                   <div id="mixedTopicCheckboxes" class="space-y-2 max-h-80 overflow-y-auto pr-1"></div>
                 </div>
 
+                <!-- Cột phải: Số câu, Đảo đáp án & Thời gian -->
                 <div class="lg:col-span-6 bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
                   <div class="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-100">
                     <div>
-                      <h3 class="font-bold text-slate-900 text-sm sm:text-base">2. Chọn số câu theo từng dạng</h3>
-                      <p class="text-xs text-slate-500">Hệ thống bốc ngẫu nhiên từ các chủ đề đã chọn</p>
+                      <h3 class="font-bold text-slate-900 text-sm sm:text-base">2. Số câu, Đảo đáp án & Thời gian</h3>
+                      <p class="text-xs text-slate-500">Bốc ngẫu nhiên không trùng từ các chủ đề đã chọn</p>
                     </div>
-                    <button type="button" onclick="fillMaxMixedCounts()"
+                    <button id="btnFillMaxMixed" type="button" onclick="fillMaxMixedCounts()"
                       class="px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold shrink-0">
                       Lấy tối đa
                     </button>
                   </div>
 
-                  <div class="space-y-3">
-                    <div class="p-3.5 rounded-xl border border-indigo-100 bg-indigo-50/40 flex items-center justify-between gap-3">
+                  <div id="mixedTsaBanner" class="hidden p-3.5 rounded-xl bg-indigo-50 border border-indigo-200 text-xs text-indigo-900 space-y-1">
+                    <div class="font-bold text-sm">🎓 Đang chọn Form Toán TSA (60 phút)</div>
+                    <div>Hệ thống sẽ bốc ngẫu nhiên <strong id="mixedTsaCountText">40</strong> câu bất kì (trộn lẫn Trắc nghiệm, Đúng/Sai, Trả lời ngắn) từ các chủ đề đã chọn.</div>
+                  </div>
+
+                  <div id="mixedManualCountsWrap" class="space-y-2.5">
+                    <div class="p-3 rounded-xl border border-indigo-100 bg-indigo-50/40 flex items-center justify-between gap-3">
                       <div>
                         <div class="font-bold text-sm text-slate-900">Phần I. Trắc nghiệm (A/B/C/D)</div>
                         <div class="text-xs text-slate-500 mt-0.5">Kho khả dụng: <strong id="mixedAvailMcq" class="text-indigo-700">0</strong> câu</div>
@@ -483,7 +503,7 @@
                         class="w-20 px-3 py-2 rounded-xl border border-slate-300 bg-white text-center font-bold text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     </div>
 
-                    <div class="p-3.5 rounded-xl border border-amber-200 bg-amber-50 flex items-center justify-between gap-3">
+                    <div class="p-3 rounded-xl border border-amber-200 bg-amber-50 flex items-center justify-between gap-3">
                       <div>
                         <div class="font-bold text-sm text-slate-900">Phần II. Đúng / Sai (4 ý a-d)</div>
                         <div class="text-xs text-slate-500 mt-0.5">Kho khả dụng: <strong id="mixedAvailTf" class="text-amber-700">0</strong> câu</div>
@@ -493,7 +513,7 @@
                         class="w-20 px-3 py-2 rounded-xl border border-slate-300 bg-white text-center font-bold text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     </div>
 
-                    <div class="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/40 flex items-center justify-between gap-3">
+                    <div class="p-3 rounded-xl border border-emerald-200 bg-emerald-50/40 flex items-center justify-between gap-3">
                       <div>
                         <div class="font-bold text-sm text-slate-900">Phần III. Trả lời ngắn</div>
                         <div class="text-xs text-slate-500 mt-0.5">Kho khả dụng: <strong id="mixedAvailSa" class="text-emerald-700">0</strong> câu</div>
@@ -504,10 +524,30 @@
                     </div>
                   </div>
 
-                  <label class="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer text-xs sm:text-sm text-slate-700 font-medium">
-                    <input id="mixedGroupByTypeCheck" type="checkbox" checked onchange="state.mixedConfig.groupByType = this.checked">
-                    <span>Xếp theo 3 phần (Trắc nghiệm → Đúng/Sai → Trả lời ngắn)</span>
-                  </label>
+                  <div id="mixedTimerRow" class="p-3 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between gap-3">
+                    <div>
+                      <div class="font-bold text-sm text-slate-900">⏱️ Đồng hồ đếm ngược (phút)</div>
+                      <div class="text-xs text-slate-500 mt-0.5">Nhập <strong>0</strong> nếu không giới hạn thời gian</div>
+                    </div>
+                    <input id="mixedTimerMinutes" type="number" min="0" max="300" value="0"
+                      oninput="onMixedTimerInput(this.value)"
+                      class="w-20 px-3 py-2 rounded-xl border border-slate-300 bg-white text-center font-bold text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                  </div>
+
+                  <div class="space-y-2">
+                    <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer text-xs text-slate-700 font-medium">
+                      <input id="mixedGroupByTypeCheck" type="checkbox" checked onchange="state.mixedConfig.groupByType = this.checked">
+                      <span>Xếp theo 3 phần (Trắc nghiệm → Đúng/Sai → Trả lời ngắn)</span>
+                    </label>
+                    <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer text-xs text-slate-700 font-medium">
+                      <input id="mixedShuffleOptionsCheck" type="checkbox" checked onchange="state.mixedConfig.shuffleOptions = this.checked">
+                      <span>Đảo thứ tự đáp án A/B/C/D & 4 ý Đúng/Sai (a, b, c, d)</span>
+                    </label>
+                    <label id="mixedExamModeRow" class="flex items-center gap-2.5 p-2.5 rounded-xl bg-indigo-50/50 border border-indigo-200 cursor-pointer text-xs text-indigo-900 font-semibold">
+                      <input id="mixedExamModeCheck" type="checkbox" onchange="state.mixedConfig.examMode = this.checked">
+                      <span>Chế độ Thi thử (Ẩn đáp án, bấm Nộp bài hoặc hết giờ mới chấm)</span>
+                    </label>
+                  </div>
 
                   <div class="pt-2 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
                     <div class="text-sm text-slate-600">
@@ -1089,6 +1129,7 @@
 
         <!-- ==================== TEACHER PANEL 3: LUYỆN TẬP ==================== -->
         <div id="teacherPanelPractice" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div id="teacherPracticeSettingsBox" class="lg:col-span-12 bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 shadow-sm"></div>
           <div class="lg:col-span-4 bg-white rounded-2xl border border-slate-200 p-4 shadow-sm space-y-3">
             <div class="flex items-center justify-between">
               <h2 class="font-bold text-slate-900 text-sm">Các Chủ đề Luyện tập</h2>
@@ -2152,7 +2193,9 @@ $$S_n = \\frac{n(u_1 + u_n)}{2}$$`,
       loggedInPhone: null, role: 'student', courses: [], authorizedPhones: [], unlockedCourseIds: [],
       activeStudentCourseId: null, studentModule: 'hub', activeTheoryFolderId: null,
       flashcardIndex: 0, flashcardFlipped: false, studentDriveFolderId: null,
-      practiceScreen: 'mode', practiceOrigin: 'mode', mixedConfig: { selectedTopicIds: [], counts: { mcq: 0, true_false: 0, short_answer: 0 }, groupByType: true }, practiceModeTitle: '', activeQuizQuestions: [], quizAnswers: {}, quizFilterWrongOnly: false,
+      practiceScreen: 'mode', practiceOrigin: 'mode', practiceModeTitle: '', activeQuizQuestions: [], quizAnswers: {}, quizFilterWrongOnly: false,
+      quizExamMode: false, quizExamSubmitted: false, quizLocked: false, quizTimerTotalSeconds: 0, quizTimeLeft: 0, quizTimerInterval: null,
+      mixedConfig: { selectedTopicIds: [], counts: { mcq: 0, true_false: 0, short_answer: 0 }, groupByType: true, shuffleOptions: true, timerMinutes: 0, examMode: false, activePreset: null },
       pendingUnlockCourseId: null, pendingUrlCourseId: null,
       teacherCourseId: null, teacherTab: 'theory', teacherTheoryFolderId: null, teacherDriveFolderId: null, teacherPracticeTopicId: null,
       theoryLayout: 'split',
@@ -2550,7 +2593,29 @@ $$S_n = \\frac{n(u_1 + u_n)}{2}$$`,
     function openDriveTextModal(id) { const item = getActiveStudentCourse().driveItems.find(i => i.id === id); if (item) openTextPreviewModal(item.name, item.content); }
 
     // Student Module 3: Practice
+    function getCoursePracticeSettings(course) {
+      if (course && course.practiceSettings) {
+        return {
+          math_thpt: Boolean(course.practiceSettings.math_thpt),
+          physics_thpt: Boolean(course.practiceSettings.physics_thpt),
+          math_tsa: Boolean(course.practiceSettings.math_tsa),
+          free_mix: course.practiceSettings.free_mix !== false
+        };
+      }
+      const name = String(course?.name || '').toLowerCase();
+      const isPhysics = name.includes('lý') || name.includes('ly');
+      const isTsa = name.includes('tsa');
+      const isMath = name.includes('toán') || name.includes('toan');
+      return {
+        math_thpt: isMath && !isTsa,
+        physics_thpt: isPhysics,
+        math_tsa: isTsa,
+        free_mix: true
+      };
+    }
+
     function handlePracticeTopBack() {
+      stopQuizTimer();
       if (state.practiceScreen === 'mode') {
         backToCourseHub();
       } else if (state.practiceScreen === 'quiz' && (state.practiceOrigin === 'topicPicker' || state.practiceOrigin === 'mixedConfig')) {
@@ -2561,14 +2626,19 @@ $$S_n = \\frac{n(u_1 + u_n)}{2}$$`,
         renderStudentPractice(getActiveStudentCourse());
       }
     }
+
     function renderStudentPractice(course) {
+      if (state.practiceScreen !== 'quiz') {
+        stopQuizTimer();
+        document.getElementById('quizTimerBadge')?.classList.add('hidden');
+      }
       document.getElementById('practiceModeSelector').classList.toggle('hidden', state.practiceScreen !== 'mode');
       document.getElementById('practiceTopicListScreen').classList.toggle('hidden', state.practiceScreen !== 'topicPicker');
       document.getElementById('practiceMixedConfigScreen').classList.toggle('hidden', state.practiceScreen !== 'mixedConfig');
       document.getElementById('practiceQuizScreen').classList.toggle('hidden', state.practiceScreen !== 'quiz');
 
       const allCount = (course.practiceTopics || []).reduce((acc, t) => acc + (t.questions?.length || 0), 0);
-      document.getElementById('mixedQuizTotalHint').textContent = `Chọn chủ đề & số câu từng dạng (Kho: ${allCount} câu) →`;
+      document.getElementById('mixedQuizTotalHint').textContent = `Chọn chủ đề, đảo đáp án & thi thử Form chuẩn (Kho: ${allCount} câu) →`;
 
       const backLabel = document.getElementById('practiceBackBtnLabel');
       const titleEl = document.getElementById('practiceHeaderTitle');
@@ -2580,15 +2650,18 @@ $$S_n = \\frac{n(u_1 + u_n)}{2}$$`,
         backLabel.textContent = '← Chọn lại chế độ luyện tập'; titleEl.textContent = 'Ôn theo chủ đề'; scoreBadge.classList.add('hidden');
         renderPracticeTopicsGrid(course);
       } else if (state.practiceScreen === 'mixedConfig') {
-        backLabel.textContent = '← Chọn lại chế độ luyện tập'; titleEl.textContent = 'Trộn bài — Tùy chọn cấu trúc đề'; scoreBadge.classList.add('hidden');
+        backLabel.textContent = '← Chọn lại chế độ luyện tập'; titleEl.textContent = 'Trộn bài & Thi thử'; scoreBadge.classList.add('hidden');
         renderMixedConfigScreen(course);
       } else {
         backLabel.textContent = state.practiceOrigin === 'mixedConfig' ? '← Chỉnh lại đề trộn' : (state.practiceOrigin === 'topicPicker' ? '← Chọn chủ đề khác' : '← Chọn lại chế độ luyện tập');
         titleEl.textContent = state.practiceModeTitle; scoreBadge.classList.remove('hidden');
+        renderQuizTimerBadge();
         renderQuizQuestions();
       }
     }
+
     function openPracticeTopicPicker() { state.practiceScreen = 'topicPicker'; renderStudentPractice(getActiveStudentCourse()); }
+
     function renderPracticeTopicsGrid(course) {
       const grid = document.getElementById('practiceTopicsGrid');
       const topics = course.practiceTopics || [];
@@ -2602,15 +2675,22 @@ $$S_n = \\frac{n(u_1 + u_n)}{2}$$`,
         </button>
       `).join('');
     }
+
     function startTopicQuiz(topicId) {
       const topic = getActiveStudentCourse().practiceTopics.find(t => t.id === topicId);
       if (!topic || !topic.questions.length) return alert('Chủ đề này chưa có câu hỏi nào!');
+      stopQuizTimer();
       state.practiceOrigin = 'topicPicker';
       state.practiceModeTitle = `Ôn chủ đề: ${topic.name}`;
       state.activeQuizQuestions = topic.questions.map(q => ({ ...structuredClone(q), topicName: topic.name }));
-      state.quizAnswers = {}; state.quizFilterWrongOnly = false; state.practiceScreen = 'quiz';
+      state.quizAnswers = {}; state.quizFilterWrongOnly = false;
+      state.quizExamMode = false; state.quizExamSubmitted = false; state.quizLocked = false;
+      state.quizTimerTotalSeconds = 0; state.quizTimeLeft = 0;
+      state.practiceScreen = 'quiz';
       renderStudentPractice(getActiveStudentCourse());
     }
+
+    // ==================== LOGIC TRỘN ĐỀ, ĐẢO ĐÁP ÁN & FORM CHUẨN ====================
     function shuffleArray(arr) {
       const copy = [...arr];
       for (let i = copy.length - 1; i > 0; i--) {
@@ -2619,6 +2699,32 @@ $$S_n = \\frac{n(u_1 + u_n)}{2}$$`,
       }
       return copy;
     }
+
+    function isPlaceholderMcqOptions(opts) {
+      if (!Array.isArray(opts) || opts.length < 2) return true;
+      const letters = ['A', 'B', 'C', 'D'];
+      return opts.every((o, i) => String(o || '').trim().toUpperCase() === letters[i]);
+    }
+
+    function shuffleMcqQuestion(q) {
+      const cloned = structuredClone(q);
+      if (!Array.isArray(cloned.options) || cloned.options.length < 2) return cloned;
+      if (cloned.questionImage && isPlaceholderMcqOptions(cloned.options)) return cloned;
+      const pairs = cloned.options.map((text, idx) => ({ text, isCorrect: idx === (cloned.correctIndex ?? 0) }));
+      const shuffled = shuffleArray(pairs);
+      cloned.options = shuffled.map(p => p.text);
+      cloned.correctIndex = Math.max(0, shuffled.findIndex(p => p.isCorrect));
+      return cloned;
+    }
+
+    function shuffleTrueFalseQuestion(q) {
+      const cloned = structuredClone(q);
+      const stmts = ensureFourStatements(cloned.statements);
+      const hasRealText = stmts.every(s => s.text.trim().length > 0) && !stmts.every((s, i) => s.text.trim().toLowerCase() === TF_LABELS[i]);
+      cloned.statements = hasRealText ? shuffleArray(stmts) : stmts;
+      return cloned;
+    }
+
     function getMixedPoolByType(course) {
       const selectedSet = new Set(state.mixedConfig.selectedTopicIds);
       const pools = { mcq: [], true_false: [], short_answer: [] };
@@ -2631,21 +2737,88 @@ $$S_n = \\frac{n(u_1 + u_n)}{2}$$`,
       });
       return pools;
     }
+
     function openMixedConfigScreen() {
       const course = getActiveStudentCourse();
       const topics = course.practiceTopics || [];
       const totalQ = topics.reduce((sum, t) => sum + (t.questions?.length || 0), 0);
       if (!totalQ) return alert('Khóa học này chưa có câu hỏi nào để trộn bài!');
-      state.mixedConfig.selectedTopicIds = topics.map(t => t.id);
-      state.mixedConfig.groupByType = true;
+
+      const cfg = getCoursePracticeSettings(course);
+      state.mixedConfig = {
+        selectedTopicIds: topics.map(t => t.id),
+        counts: { mcq: 0, true_false: 0, short_answer: 0 },
+        groupByType: true,
+        shuffleOptions: true,
+        timerMinutes: 0,
+        examMode: false,
+        activePreset: null
+      };
+      state.practiceScreen = 'mixedConfig';
+      const notice = document.getElementById('mixedPresetNotice');
+      if (notice) notice.classList.add('hidden');
+
+      if (!cfg.free_mix) {
+        const firstOn = cfg.math_tsa ? 'math_tsa' : (cfg.math_thpt ? 'math_thpt' : (cfg.physics_thpt ? 'physics_thpt' : 'all_free'));
+        applyMixedPreset(firstOn);
+        return;
+      }
+
       const pools = getMixedPoolByType(course);
       state.mixedConfig.counts = { mcq: pools.mcq.length, true_false: pools.true_false.length, short_answer: pools.short_answer.length };
-      state.practiceScreen = 'mixedConfig';
       renderStudentPractice(course);
     }
+
+    function renderMixedPresetsBar(course) {
+      const cfg = getCoursePracticeSettings(course);
+      const activeP = state.mixedConfig.activePreset;
+      const btns = [];
+
+      if (cfg.math_thpt) {
+        btns.push(`
+          <button type="button" onclick="applyMixedPreset('math_thpt')"
+            class="text-left p-3.5 rounded-xl border-2 transition space-y-1 ${activeP === 'math_thpt' ? 'border-indigo-600 bg-indigo-50 ring-2 ring-indigo-500/20' : 'border-indigo-100 hover:border-indigo-500 bg-indigo-50/40'}">
+            <div class="font-bold text-sm text-indigo-900">📐 Form Toán THPT</div>
+            <div class="text-xs text-indigo-700 font-medium">12 TN • 4 Đ/S • 6 TLN • 90p</div>
+          </button>`);
+      }
+      if (cfg.physics_thpt) {
+        btns.push(`
+          <button type="button" onclick="applyMixedPreset('physics_thpt')"
+            class="text-left p-3.5 rounded-xl border-2 transition space-y-1 ${activeP === 'physics_thpt' ? 'border-amber-500 bg-amber-100/70 ring-2 ring-amber-500/20' : 'border-amber-200 hover:border-amber-500 bg-amber-50'}">
+            <div class="font-bold text-sm text-amber-900">⚛️ Form Lý THPT</div>
+            <div class="text-xs text-amber-800 font-medium">18 TN • 4 Đ/S • 6 TLN • 50p</div>
+          </button>`);
+      }
+      if (cfg.math_tsa) {
+        btns.push(`
+          <button type="button" onclick="applyMixedPreset('math_tsa')"
+            class="text-left p-3.5 rounded-xl border-2 transition space-y-1 ${activeP === 'math_tsa' ? 'border-indigo-600 bg-indigo-50 ring-2 ring-indigo-500/20' : 'border-indigo-200 hover:border-indigo-500 bg-indigo-50/40'}">
+            <div class="font-bold text-sm text-indigo-900">🎓 Form Toán TSA</div>
+            <div class="text-xs text-indigo-700 font-medium">40 câu bất kì • 60 phút</div>
+          </button>`);
+      }
+      if (cfg.free_mix || btns.length === 0) {
+        btns.push(`
+          <button type="button" onclick="applyMixedPreset('all_free')"
+            class="text-left p-3.5 rounded-xl border-2 transition space-y-1 ${activeP === 'all_free' ? 'border-emerald-600 bg-emerald-50 ring-2 ring-emerald-500/20' : 'border-emerald-200 hover:border-emerald-500 bg-emerald-50/40'}">
+            <div class="font-bold text-sm text-emerald-900">♾️ Luyện tập tự do</div>
+            <div class="text-xs text-emerald-700 font-medium">Tự chọn số câu • Không giờ</div>
+          </button>`);
+      }
+
+      const card = document.getElementById('mixedPresetsCard');
+      const hasAnyExamPreset = cfg.math_thpt || cfg.physics_thpt || cfg.math_tsa;
+      card.classList.toggle('hidden', !hasAnyExamPreset);
+      document.getElementById('mixedPresetsGrid').innerHTML = btns.join('');
+    }
+
     function renderMixedConfigScreen(course) {
+      renderMixedPresetsBar(course);
+      const cfg = getCoursePracticeSettings(course);
       const topics = course.practiceTopics || [];
       const selectedSet = new Set(state.mixedConfig.selectedTopicIds);
+
       document.getElementById('mixedTopicCheckboxes').innerHTML = topics.map(t => {
         const qs = t.questions || [];
         const cMcq = qs.filter(q => getQuestionType(q) === 'mcq').length;
@@ -2666,11 +2839,27 @@ $$S_n = \\frac{n(u_1 + u_n)}{2}$$`,
           </label>
         `;
       }).join('');
+
       const allSelected = topics.length > 0 && topics.every(t => selectedSet.has(t.id));
       document.getElementById('btnToggleAllMixedTopics').textContent = allSelected ? 'Bỏ chọn tất cả' : 'Chọn tất cả';
-      document.getElementById('mixedGroupByTypeCheck').checked = state.mixedConfig.groupByType;
+      document.getElementById('mixedGroupByTypeCheck').checked = Boolean(state.mixedConfig.groupByType);
+      document.getElementById('mixedShuffleOptionsCheck').checked = Boolean(state.mixedConfig.shuffleOptions);
+      document.getElementById('mixedExamModeCheck').checked = Boolean(state.mixedConfig.examMode);
+      document.getElementById('mixedTimerMinutes').value = state.mixedConfig.timerMinutes || 0;
+
+      const isTsa = state.mixedConfig.activePreset === 'math_tsa';
+      const allowManual = cfg.free_mix || (!cfg.math_thpt && !cfg.physics_thpt && !cfg.math_tsa);
+      document.getElementById('mixedTsaBanner').classList.toggle('hidden', !isTsa);
+      document.getElementById('mixedManualCountsWrap').classList.toggle('hidden', isTsa);
+      document.getElementById('btnFillMaxMixed').classList.toggle('hidden', isTsa || !allowManual);
+      ['mixedCountMcq', 'mixedCountTf', 'mixedCountSa', 'mixedTimerMinutes'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.disabled = !allowManual && Boolean(state.mixedConfig.activePreset);
+      });
+
       refreshMixedPoolsAndInputs(course);
     }
+
     function refreshMixedPoolsAndInputs(course = getActiveStudentCourse()) {
       const pools = getMixedPoolByType(course);
       const maxMap = { mcq: pools.mcq.length, true_false: pools.true_false.length, short_answer: pools.short_answer.length };
@@ -2685,20 +2874,32 @@ $$S_n = \\frac{n(u_1 + u_n)}{2}$$`,
         inp.max = maxMap[type];
         if (Number(inp.value) !== clamped) inp.value = clamped;
       });
-      updateMixedTotalSummary();
+      updateMixedTotalSummary(course);
     }
-    function updateMixedTotalSummary() {
-      const { mcq, true_false, short_answer } = state.mixedConfig.counts;
-      const total = mcq + true_false + short_answer;
+
+    function updateMixedTotalSummary(course = getActiveStudentCourse()) {
+      let total = 0;
+      if (state.mixedConfig.activePreset === 'math_tsa') {
+        const pools = getMixedPoolByType(course);
+        const totalAvail = pools.mcq.length + pools.true_false.length + pools.short_answer.length;
+        total = Math.min(40, totalAvail);
+        const tsaText = document.getElementById('mixedTsaCountText');
+        if (tsaText) tsaText.textContent = total;
+      } else {
+        const { mcq, true_false, short_answer } = state.mixedConfig.counts;
+        total = mcq + true_false + short_answer;
+      }
       document.getElementById('mixedSelectedTotalBadge').textContent = total;
       document.getElementById('btnStartCustomMixed').disabled = total <= 0;
     }
+
     function toggleMixedTopic(topicId) {
       const idx = state.mixedConfig.selectedTopicIds.indexOf(topicId);
       if (idx >= 0) state.mixedConfig.selectedTopicIds.splice(idx, 1);
       else state.mixedConfig.selectedTopicIds.push(topicId);
       renderMixedConfigScreen(getActiveStudentCourse());
     }
+
     function toggleAllMixedTopics() {
       const course = getActiveStudentCourse();
       const topics = course.practiceTopics || [];
@@ -2706,6 +2907,7 @@ $$S_n = \\frac{n(u_1 + u_n)}{2}$$`,
       state.mixedConfig.selectedTopicIds = allSelected ? [] : topics.map(t => t.id);
       renderMixedConfigScreen(course);
     }
+
     function onMixedCountInput(type, rawVal) {
       const course = getActiveStudentCourse();
       const maxAvail = getMixedPoolByType(course)[type].length;
@@ -2715,32 +2917,278 @@ $$S_n = \\frac{n(u_1 + u_n)}{2}$$`,
         val = maxAvail;
         document.getElementById(type === 'mcq' ? 'mixedCountMcq' : (type === 'true_false' ? 'mixedCountTf' : 'mixedCountSa')).value = val;
       }
+      state.mixedConfig.activePreset = null;
       state.mixedConfig.counts[type] = val;
-      updateMixedTotalSummary();
+      updateMixedTotalSummary(course);
     }
+
+    function onMixedTimerInput(rawVal) {
+      let val = parseInt(rawVal, 10);
+      if (Number.isNaN(val) || val < 0) val = 0;
+      if (val > 300) { val = 300; document.getElementById('mixedTimerMinutes').value = 300; }
+      state.mixedConfig.timerMinutes = val;
+    }
+
     function fillMaxMixedCounts() {
       const course = getActiveStudentCourse();
       const pools = getMixedPoolByType(course);
+      state.mixedConfig.activePreset = null;
       state.mixedConfig.counts = { mcq: pools.mcq.length, true_false: pools.true_false.length, short_answer: pools.short_answer.length };
-      refreshMixedPoolsAndInputs(course);
+      renderMixedConfigScreen(course);
     }
+
+    function applyMixedPreset(preset) {
+      const course = getActiveStudentCourse();
+      const pools = getMixedPoolByType(course);
+      const notice = document.getElementById('mixedPresetNotice');
+      const avail = { mcq: pools.mcq.length, true_false: pools.true_false.length, short_answer: pools.short_answer.length };
+      const totalAvail = avail.mcq + avail.true_false + avail.short_answer;
+
+      if (preset === 'math_thpt' || preset === 'physics_thpt') {
+        const target = preset === 'math_thpt'
+          ? { name: 'Toán THPT (90 phút)', mcq: 12, tf: 4, sa: 6, mins: 90 }
+          : { name: 'Lý THPT (50 phút)', mcq: 18, tf: 4, sa: 6, mins: 50 };
+
+        state.mixedConfig.activePreset = preset;
+        state.mixedConfig.counts = {
+          mcq: Math.min(target.mcq, avail.mcq),
+          true_false: Math.min(target.tf, avail.true_false),
+          short_answer: Math.min(target.sa, avail.short_answer)
+        };
+        state.mixedConfig.timerMinutes = target.mins;
+        state.mixedConfig.groupByType = true;
+        state.mixedConfig.shuffleOptions = true;
+        state.mixedConfig.examMode = true;
+
+        const shortages = [];
+        if (avail.mcq < target.mcq) shortages.push(`${avail.mcq}/${target.mcq} TN`);
+        if (avail.true_false < target.tf) shortages.push(`${avail.true_false}/${target.tf} Đ/S`);
+        if (avail.short_answer < target.sa) shortages.push(`${avail.short_answer}/${target.sa} TLN`);
+
+        if (notice) {
+          notice.classList.remove('hidden');
+          if (shortages.length) {
+            notice.className = 'text-xs font-medium px-3 py-2 rounded-lg bg-amber-50 text-amber-800 border border-amber-200';
+            notice.textContent = `⚠️ Đã bật ${target.name} + Thi thử + Đảo đáp án. Kho chủ đề đã chọn mới có ${shortages.join(', ')} nên tạm lấy tối đa số câu hiện có.`;
+          } else {
+            notice.className = 'text-xs font-semibold px-3 py-2 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200';
+            notice.textContent = `✓ Đã áp dụng chuẩn ${target.name} (${target.mcq} TN • ${target.tf} Đ/S • ${target.sa} TLN • Thi thử & Đảo đáp án).`;
+          }
+        }
+      } else if (preset === 'math_tsa') {
+        state.mixedConfig.activePreset = 'math_tsa';
+        state.mixedConfig.timerMinutes = 60;
+        state.mixedConfig.groupByType = false;
+        state.mixedConfig.shuffleOptions = true;
+        state.mixedConfig.examMode = true;
+
+        if (notice) {
+          notice.classList.remove('hidden');
+          if (totalAvail < 40) {
+            notice.className = 'text-xs font-medium px-3 py-2 rounded-lg bg-amber-50 text-amber-800 border border-amber-200';
+            notice.textContent = `⚠️ Đã bật Form Toán TSA (60 phút) + Thi thử + Đảo đáp án. Kho chủ đề đã chọn hiện có ${totalAvail}/40 câu nên sẽ lấy toàn bộ ${totalAvail} câu ngẫu nhiên.`;
+          } else {
+            notice.className = 'text-xs font-semibold px-3 py-2 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200';
+            notice.textContent = '✓ Đã áp dụng Form Toán TSA: 40 câu bất kì mọi dạng trong 60 phút (Thi thử & Đảo đáp án).';
+          }
+        }
+      } else {
+        state.mixedConfig.activePreset = 'all_free';
+        state.mixedConfig.counts = { mcq: avail.mcq, true_false: avail.true_false, short_answer: avail.short_answer };
+        state.mixedConfig.timerMinutes = 0;
+        state.mixedConfig.groupByType = true;
+        state.mixedConfig.examMode = false;
+        if (notice) {
+          notice.classList.remove('hidden');
+          notice.className = 'text-xs font-medium px-3 py-2 rounded-lg bg-slate-100 text-slate-700';
+          notice.textContent = '♾️ Đã chuyển sang Luyện tập tự do (tự chọn số câu, không bấm giờ, chấm từng câu ngay).';
+        }
+      }
+      renderMixedConfigScreen(course);
+    }
+
     function startCustomMixedQuiz() {
       const course = getActiveStudentCourse();
       const pools = getMixedPoolByType(course);
-      const { mcq, true_false, short_answer } = state.mixedConfig.counts;
-      const pMcq = shuffleArray(pools.mcq).slice(0, mcq);
-      const pTf = shuffleArray(pools.true_false).slice(0, true_false);
-      const pSa = shuffleArray(pools.short_answer).slice(0, short_answer);
-      let finalQuestions = [...pMcq, ...pTf, ...pSa];
-      if (!finalQuestions.length) return alert('Vui lòng chọn ít nhất 1 câu hỏi để bắt đầu!');
-      if (!state.mixedConfig.groupByType) finalQuestions = shuffleArray(finalQuestions);
+      const doShuffleOpts = Boolean(state.mixedConfig.shuffleOptions);
+      const mins = Number(state.mixedConfig.timerMinutes) || 0;
+      let finalQuestions = [];
+      let modeTitle = '';
+
+      if (state.mixedConfig.activePreset === 'math_tsa') {
+        const allPool = [...pools.mcq, ...pools.true_false, ...pools.short_answer];
+        let picked = shuffleArray(allPool).slice(0, 40);
+        if (!picked.length) return alert('Vui lòng chọn ít nhất 1 chủ đề có câu hỏi để bắt đầu!');
+        if (doShuffleOpts) {
+          picked = picked.map(q => {
+            const qt = getQuestionType(q);
+            if (qt === 'mcq') return shuffleMcqQuestion(q);
+            if (qt === 'true_false') return shuffleTrueFalseQuestion(q);
+            return q;
+          });
+        }
+        if (state.mixedConfig.groupByType) {
+          const order = { mcq: 0, true_false: 1, short_answer: 2 };
+          picked.sort((a, b) => order[getQuestionType(a)] - order[getQuestionType(b)]);
+        }
+        finalQuestions = picked;
+        const nMcq = picked.filter(q => getQuestionType(q) === 'mcq').length;
+        const nTf = picked.filter(q => getQuestionType(q) === 'true_false').length;
+        const nSa = picked.filter(q => getQuestionType(q) === 'short_answer').length;
+        modeTitle = `Đề Toán TSA (${picked.length} câu: ${nMcq} TN • ${nTf} Đ/S • ${nSa} TLN${mins > 0 ? ` • ${mins}p` : ''})`;
+      } else {
+        const { mcq, true_false, short_answer } = state.mixedConfig.counts;
+        let pMcq = shuffleArray(pools.mcq).slice(0, mcq);
+        let pTf = shuffleArray(pools.true_false).slice(0, true_false);
+        let pSa = shuffleArray(pools.short_answer).slice(0, short_answer);
+        if (doShuffleOpts) {
+          pMcq = pMcq.map(shuffleMcqQuestion);
+          pTf = pTf.map(shuffleTrueFalseQuestion);
+        }
+        finalQuestions = [...pMcq, ...pTf, ...pSa];
+        if (!finalQuestions.length) return alert('Vui lòng chọn ít nhất 1 câu hỏi để bắt đầu!');
+        if (!state.mixedConfig.groupByType) finalQuestions = shuffleArray(finalQuestions);
+        modeTitle = `Đề trộn (${pMcq.length} TN • ${pTf.length} Đ/S • ${pSa.length} TLN${mins > 0 ? ` • ${mins}p` : ''})`;
+      }
+
+      stopQuizTimer();
       state.practiceOrigin = 'mixedConfig';
-      state.practiceModeTitle = `Đề trộn (${pMcq.length} TN • ${pTf.length} Đ/S • ${pSa.length} TLN)`;
+      state.practiceModeTitle = modeTitle;
       state.activeQuizQuestions = finalQuestions;
-      state.quizAnswers = {}; state.quizFilterWrongOnly = false; state.practiceScreen = 'quiz';
+      state.quizAnswers = {};
+      state.quizFilterWrongOnly = false;
+      state.quizExamMode = Boolean(state.mixedConfig.examMode);
+      state.quizExamSubmitted = false;
+      state.quizLocked = false;
+      state.quizTimerTotalSeconds = mins * 60;
+      state.quizTimeLeft = mins * 60;
+      state.practiceScreen = 'quiz';
       renderStudentPractice(course);
+      if (mins > 0) startQuizTimer();
     }
-    
+
+    // ==================== ĐỒNG HỒ ĐẾM NGƯỢC & THI THỬ ====================
+    function stopQuizTimer() {
+      if (state.quizTimerInterval) {
+        clearInterval(state.quizTimerInterval);
+        state.quizTimerInterval = null;
+      }
+    }
+
+    function formatTimer(sec) {
+      const s = Math.max(0, Math.floor(sec));
+      const m = Math.floor(s / 60);
+      const r = s % 60;
+      return `${String(m).padStart(2, '0')}:${String(r).padStart(2, '0')}`;
+    }
+
+    function renderQuizTimerBadge() {
+      const el = document.getElementById('quizTimerBadge');
+      if (!el) return;
+      if (!state.quizTimerTotalSeconds || state.quizTimerTotalSeconds <= 0) {
+        el.classList.add('hidden');
+        return;
+      }
+      el.classList.remove('hidden');
+      el.textContent = `⏱️ ${formatTimer(state.quizTimeLeft)}`;
+      if (state.quizTimeLeft <= 300 && !state.quizLocked) {
+        el.className = 'text-xs sm:text-sm font-mono font-bold px-3.5 py-1.5 rounded-full bg-rose-50 text-rose-700 border border-rose-300';
+      } else {
+        el.className = 'text-xs sm:text-sm font-mono font-bold px-3.5 py-1.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200';
+      }
+    }
+
+    function startQuizTimer() {
+      stopQuizTimer();
+      renderQuizTimerBadge();
+      state.quizTimerInterval = setInterval(() => {
+        if (!state.loggedInPhone || state.role !== 'student' || state.studentModule !== 'practice' || state.practiceScreen !== 'quiz') {
+          stopQuizTimer();
+          return;
+        }
+        if (state.quizLocked) {
+          stopQuizTimer();
+          return;
+        }
+        state.quizTimeLeft = Math.max(0, state.quizTimeLeft - 1);
+        renderQuizTimerBadge();
+        if (state.quizTimeLeft <= 0) {
+          stopQuizTimer();
+          submitExamQuiz(true);
+        }
+      }, 1000);
+    }
+
+    function submitExamQuiz(isAuto = false) {
+      stopQuizTimer();
+      state.quizExamSubmitted = true;
+      state.quizLocked = true;
+      (state.activeQuizQuestions || []).forEach((q, idx) => {
+        const qt = getQuestionType(q);
+        const ans = state.quizAnswers[idx];
+        if (qt === 'true_false') {
+          state.quizAnswers[idx] = { choices: (ans && ans.choices) ? ans.choices : {}, checked: true };
+        } else if (qt === 'short_answer') {
+          state.quizAnswers[idx] = { value: (ans && typeof ans.value === 'string') ? ans.value : '', submitted: true };
+        }
+      });
+      renderQuizTimerBadge();
+      renderQuizQuestions();
+      if (isAuto) {
+        alert('⏰ Đã hết thời gian làm bài! Hệ thống đã tự động thu bài và chấm điểm.');
+      }
+    }
+
+    function getQuizStats() {
+      const questions = state.activeQuizQuestions || [];
+      let answered = 0, correct = 0;
+      const wrongIndices = [];
+      let mcqOk = 0, mcqTot = 0, tfOk = 0, tfTot = 0, tfItemsOk = 0, tfItemsTot = 0, saOk = 0, saTot = 0;
+
+      questions.forEach((q, idx) => {
+        const qt = getQuestionType(q);
+        const ans = state.quizAnswers[idx];
+        if (qt === 'mcq') {
+          mcqTot++;
+          if (typeof ans === 'number') {
+            answered++;
+            if (ans === (q.correctIndex ?? 0)) { correct++; mcqOk++; } else wrongIndices.push(idx);
+          } else if (state.quizExamSubmitted) {
+            wrongIndices.push(idx);
+          }
+        } else if (qt === 'true_false') {
+          tfTot++; tfItemsTot += 4;
+          const stmts = ensureFourStatements(q.statements);
+          const choices = (ans && ans.choices) ? ans.choices : {};
+          const anyPicked = stmts.some((_, i) => choices[i] !== undefined);
+          if ((state.quizExamMode && anyPicked) || (!state.quizExamMode && ans && ans.checked)) answered++;
+          const isGraded = state.quizExamMode ? state.quizExamSubmitted : Boolean(ans && ans.checked);
+          if (isGraded) {
+            const itemsRight = stmts.filter((s, i) => choices[i] === s.isTrue).length;
+            tfItemsOk += itemsRight;
+            if (itemsRight === 4) { correct++; tfOk++; } else wrongIndices.push(idx);
+          }
+        } else {
+          saTot++;
+          const val = (ans && typeof ans.value === 'string') ? ans.value : '';
+          if ((state.quizExamMode && val.trim()) || (!state.quizExamMode && ans && ans.submitted)) answered++;
+          const isGraded = state.quizExamMode ? state.quizExamSubmitted : Boolean(ans && ans.submitted);
+          if (isGraded) {
+            if (isShortAnswerCorrect(val, q.shortAnswer)) { correct++; saOk++; } else wrongIndices.push(idx);
+          }
+        }
+      });
+      return { total: questions.length, answered, correct, wrongIndices, mcqOk, mcqTot, tfOk, tfTot, tfItemsOk, tfItemsTot, saOk, saTot };
+    }
+
+    function updateExamProgressUI() {
+      const el = document.getElementById('examAnsweredCountText');
+      if (!el) return;
+      const st = getQuizStats();
+      el.textContent = `Đã trả lời ${st.answered} / ${st.total} câu`;
+      document.getElementById('quizScoreBadge').textContent = `Đang làm: ${st.answered} / ${st.total} câu`;
+    }
+
     const TF_LABELS = ['a', 'b', 'c', 'd'];
     function getQuestionType(q) {
       if (q && (q.type === 'true_false' || q.type === 'short_answer' || q.type === 'mcq')) return q.type;
@@ -2773,32 +3221,60 @@ $$S_n = \\frac{n(u_1 + u_n)}{2}$$`,
     function renderQuizQuestions() {
       const questions = state.activeQuizQuestions;
       const container = document.getElementById('quizContainer');
-      let answered = 0, correct = 0; const wrongIndices = [];
-      questions.forEach((q, idx) => {
-        const qt = getQuestionType(q);
-        const ans = state.quizAnswers[idx];
-        if (ans === undefined) return;
-        if (qt === 'mcq' && typeof ans === 'number') {
-          answered++;
-          if (ans === (q.correctIndex ?? 0)) correct++; else wrongIndices.push(idx);
-        } else if (qt === 'true_false' && ans && ans.checked) {
-          answered++;
-          const stmts = ensureFourStatements(q.statements);
-          const allOk = stmts.every((s, i) => ans.choices[i] === s.isTrue);
-          if (allOk) correct++; else wrongIndices.push(idx);
-        } else if (qt === 'short_answer' && ans && ans.submitted) {
-          answered++;
-          if (isShortAnswerCorrect(ans.value, q.shortAnswer)) correct++; else wrongIndices.push(idx);
-        }
-      });
-      document.getElementById('quizScoreBadge').textContent = `Đúng: ${correct} / ${questions.length}`;
-      const displayIndices = state.quizFilterWrongOnly ? wrongIndices : questions.map((_, i) => i);
+      const st = getQuizStats();
+      const scoreBadge = document.getElementById('quizScoreBadge');
+
+      if (state.quizExamMode && !state.quizExamSubmitted) {
+        scoreBadge.textContent = `Đang làm: ${st.answered} / ${st.total} câu`;
+      } else {
+        scoreBadge.textContent = `Đúng: ${st.correct} / ${st.total}`;
+      }
+
+      const displayIndices = state.quizFilterWrongOnly ? st.wrongIndices : questions.map((_, i) => i);
       const labels = ['A', 'B', 'C', 'D'];
-      let html = answered > 0 ? `
-        <div class="flex flex-wrap gap-2 mb-6">
-          <button onclick="resetCurrentQuiz()" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold">Làm lại từ đầu</button>
-          ${wrongIndices.length ? `<button onclick="toggleQuizWrongOnly()" class="px-3 py-1.5 rounded-lg ${state.quizFilterWrongOnly ? 'bg-amber-600 text-white' : 'bg-amber-50 text-amber-700'} text-xs font-semibold">${state.quizFilterWrongOnly ? 'Hiện tất cả câu' : `Làm lại ${wrongIndices.length} câu sai`}</button>` : ''}
-        </div>` : '';
+      let html = '';
+
+      if (state.quizExamMode && !state.quizExamSubmitted) {
+        html += `
+          <div class="mb-6 p-4 rounded-2xl bg-indigo-50 border border-indigo-200 flex flex-wrap items-center justify-between gap-3">
+            <div class="space-y-0.5">
+              <div class="font-bold text-sm text-indigo-900">📝 Chế độ Thi thử đang bật</div>
+              <div id="examAnsweredCountText" class="text-xs text-indigo-700 font-medium">Đã trả lời ${st.answered} / ${st.total} câu</div>
+            </div>
+            <button onclick="if(confirm('Em chắc chắn muốn nộp bài ngay?')) submitExamQuiz(false)"
+              class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-bold shadow-sm transition">
+              Nộp bài &amp; Chấm điểm
+            </button>
+          </div>`;
+      } else if (state.quizExamMode && state.quizExamSubmitted) {
+        const spentSec = state.quizTimerTotalSeconds > 0 ? (state.quizTimerTotalSeconds - state.quizTimeLeft) : 0;
+        const timeText = state.quizTimerTotalSeconds > 0 ? ` • Thời gian: ${formatTimer(spentSec)} / ${formatTimer(state.quizTimerTotalSeconds)}` : '';
+        html += `
+          <div class="mb-6 p-5 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <div class="font-extrabold text-base text-emerald-900">🎉 Kết quả bài thi: Đúng trọn vẹn ${st.correct} / ${st.total} câu</div>
+                <div class="text-xs text-emerald-800 mt-1 font-medium">
+                  ${st.mcqTot ? `Trắc nghiệm: <strong>${st.mcqOk}/${st.mcqTot}</strong>` : ''}
+                  ${st.tfTot ? `${st.mcqTot ? ' • ' : ''}Đúng/Sai: <strong>${st.tfItemsOk}/${st.tfItemsTot} ý</strong> (${st.tfOk}/${st.tfTot} câu trọn)` : ''}
+                  ${st.saTot ? `${(st.mcqTot || st.tfTot) ? ' • ' : ''}Trả lời ngắn: <strong>${st.saOk}/${st.saTot}</strong>` : ''}
+                  ${timeText}
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button onclick="startCustomMixedQuiz()" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold">🔀 Trộn đề mới</button>
+              <button onclick="resetCurrentQuiz()" class="px-3.5 py-1.5 rounded-lg bg-white border border-emerald-300 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold">Làm lại đề này</button>
+              ${st.wrongIndices.length ? `<button onclick="toggleQuizWrongOnly()" class="px-3.5 py-1.5 rounded-lg ${state.quizFilterWrongOnly ? 'bg-amber-600 text-white' : 'bg-amber-50 border border-amber-200 text-amber-800'} text-xs font-semibold">${state.quizFilterWrongOnly ? 'Hiện tất cả câu' : `Xem ${st.wrongIndices.length} câu chưa đúng`}</button>` : ''}
+            </div>
+          </div>`;
+      } else if (st.answered > 0 || state.quizLocked) {
+        html += `
+          <div class="flex flex-wrap gap-2 mb-6">
+            <button onclick="resetCurrentQuiz()" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold">Làm lại từ đầu</button>
+            ${st.wrongIndices.length ? `<button onclick="toggleQuizWrongOnly()" class="px-3 py-1.5 rounded-lg ${state.quizFilterWrongOnly ? 'bg-amber-600 text-white' : 'bg-amber-50 text-amber-700'} text-xs font-semibold">${state.quizFilterWrongOnly ? 'Hiện tất cả câu' : `Làm lại ${st.wrongIndices.length} câu sai`}</button>` : ''}
+          </div>`;
+      }
 
       html += `<div class="space-y-5">` + displayIndices.map(idx => {
         const q = questions[idx];
@@ -2810,70 +3286,74 @@ $$S_n = \\frac{n(u_1 + u_n)}{2}$$`,
 
         let bodyHtml = '';
         if (qt === 'mcq') {
-          const isAnswered = typeof ans === 'number';
+          const isPicked = typeof ans === 'number';
+          const showResult = state.quizExamMode ? state.quizExamSubmitted : isPicked;
           const opts = q.options || ['A', 'B', 'C', 'D'];
           bodyHtml = `
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               ${opts.map((opt, oIdx) => {
                 let cls = 'border-slate-200 bg-white hover:border-indigo-300 text-slate-700';
-                if (isAnswered) {
+                if (showResult) {
                   if (oIdx === q.correctIndex) cls = 'border-emerald-500 bg-emerald-50 text-emerald-900 font-medium';
                   else if (oIdx === ans) cls = 'border-rose-400 bg-rose-50 text-rose-900';
                   else cls = 'border-slate-200 bg-white/60 text-slate-400';
+                } else if (isPicked && oIdx === ans) {
+                  cls = 'border-indigo-600 bg-indigo-50 text-indigo-900 font-semibold';
                 }
-                return `<button onclick="answerQuizQuestion(${idx}, ${oIdx})" class="text-left p-3 rounded-xl border text-sm transition flex items-start gap-2 ${cls}"><span class="font-bold shrink-0">${labels[oIdx]}.</span><span>${renderInlineMath(opt)}</span></button>`;
+                return `<button ${state.quizLocked ? 'disabled' : ''} onclick="answerQuizQuestion(${idx}, ${oIdx})" class="text-left p-3 rounded-xl border text-sm transition flex items-start gap-2 ${cls}"><span class="font-bold shrink-0">${labels[oIdx]}.</span><span>${renderInlineMath(opt)}</span></button>`;
               }).join('')}
             </div>
-            ${isAnswered ? `
+            ${showResult ? `
               <div class="p-3 rounded-xl text-xs leading-relaxed ${ans === q.correctIndex ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-amber-50 text-amber-900 border border-amber-200'}">
-                <strong>${ans === q.correctIndex ? '✓ Chính xác!' : `✗ Chưa đúng (Đáp án: ${labels[q.correctIndex]}).`}</strong> ${renderInlineMath(q.explanation || '')}
+                <strong>${ans === q.correctIndex ? '✓ Chính xác!' : (isPicked ? `✗ Chưa đúng (Đáp án: ${labels[q.correctIndex]}).` : `✗ Chưa làm (Đáp án: ${labels[q.correctIndex]}).`)}</strong> ${renderInlineMath(q.explanation || '')}
               </div>` : ''}
           `;
         } else if (qt === 'true_false') {
           const stmts = ensureFourStatements(q.statements);
           const choices = (ans && ans.choices) ? ans.choices : {};
-          const checked = Boolean(ans && ans.checked);
+          const checked = state.quizExamMode ? state.quizExamSubmitted : Boolean(ans && ans.checked);
           const selectedCount = stmts.filter((_, i) => choices[i] !== undefined).length;
           const correctItems = stmts.filter((s, i) => choices[i] === s.isTrue).length;
+          const btnDisabled = checked || state.quizLocked;
           bodyHtml = `
             <div class="space-y-2">
-              ${stmts.map((st, sIdx) => {
+              ${stmts.map((stItem, sIdx) => {
                 const picked = choices[sIdx];
-                const ok = checked && picked === st.isTrue;
-                const bad = checked && picked !== st.isTrue;
+                const ok = checked && picked === stItem.isTrue;
+                const bad = checked && picked !== stItem.isTrue;
                 return `
                   <div class="p-3 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 ${ok ? 'bg-emerald-50/70 border-emerald-400' : (bad ? 'bg-rose-50/70 border-rose-300' : 'bg-white border-slate-200')}">
                     <div class="text-sm text-slate-800 flex items-start gap-2 min-w-0">
                       <span class="font-bold shrink-0">${TF_LABELS[sIdx]})</span>
-                      <div>${renderInlineMath(st.text)}${checked ? ` <span class="ml-1.5 text-xs font-bold ${ok ? 'text-emerald-700' : 'text-rose-700'}">${ok ? '✓ Đúng' : `✗ Sai (Đáp án: ${st.isTrue ? 'Đúng' : 'Sai'})`}</span>` : ''}</div>
+                      <div>${renderInlineMath(stItem.text)}${checked ? ` <span class="ml-1.5 text-xs font-bold ${ok ? 'text-emerald-700' : 'text-rose-700'}">${ok ? '✓ Đúng' : `✗ Sai (Đáp án: ${stItem.isTrue ? 'Đúng' : 'Sai'})`}</span>` : ''}</div>
                     </div>
                     <div class="flex items-center gap-1.5 shrink-0">
-                      <button ${checked ? 'disabled' : ''} onclick="answerTrueFalseItem(${idx}, ${sIdx}, true)" class="px-3 py-1.5 rounded-lg text-xs font-bold border ${picked === true ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-slate-50 text-slate-700 border-slate-200'}">Đúng</button>
-                      <button ${checked ? 'disabled' : ''} onclick="answerTrueFalseItem(${idx}, ${sIdx}, false)" class="px-3 py-1.5 rounded-lg text-xs font-bold border ${picked === false ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-slate-50 text-slate-700 border-slate-200'}">Sai</button>
+                      <button ${btnDisabled ? 'disabled' : ''} onclick="answerTrueFalseItem(${idx}, ${sIdx}, true)" class="px-3 py-1.5 rounded-lg text-xs font-bold border ${picked === true ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-slate-50 text-slate-700 border-slate-200'}">Đúng</button>
+                      <button ${btnDisabled ? 'disabled' : ''} onclick="answerTrueFalseItem(${idx}, ${sIdx}, false)" class="px-3 py-1.5 rounded-lg text-xs font-bold border ${picked === false ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-slate-50 text-slate-700 border-slate-200'}">Sai</button>
                     </div>
                   </div>
                 `;
               }).join('')}
             </div>
-            ${!checked ? `
+            ${!checked && !state.quizExamMode ? `
               <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
                 <span class="text-xs text-slate-500">Đã chọn ${selectedCount}/4 ý (a, b, c, d)</span>
-                <button ${selectedCount < 4 ? 'disabled' : ''} onclick="checkTrueFalseQuestion(${idx})" class="px-4 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-xs font-semibold">Kiểm tra 4 ý a, b, c, d</button>
+                <button ${selectedCount < 4 || state.quizLocked ? 'disabled' : ''} onclick="checkTrueFalseQuestion(${idx})" class="px-4 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-xs font-semibold">Kiểm tra 4 ý a, b, c, d</button>
               </div>
-            ` : `
+            ` : (checked ? `
               <div class="p-3 rounded-xl text-xs leading-relaxed ${correctItems === 4 ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-amber-50 text-amber-900 border border-amber-200'}">
                 <strong>${correctItems === 4 ? '✓ Xuất sắc! Đúng cả 4/4 ý.' : `Đúng ${correctItems}/4 ý.`}</strong> ${renderInlineMath(q.explanation || '')}
               </div>
-            `}
+            ` : '')}
           `;
         } else {
           const val = (ans && typeof ans.value === 'string') ? ans.value : '';
-          const submitted = Boolean(ans && ans.submitted);
+          const submitted = state.quizExamMode ? state.quizExamSubmitted : Boolean(ans && ans.submitted);
           const ok = submitted && isShortAnswerCorrect(val, q.shortAnswer);
           bodyHtml = `
-            <form onsubmit="submitShortAnswerQuestion(event, ${idx})" class="flex flex-wrap sm:flex-nowrap items-center gap-2">
-              <input id="quiz-sa-input-${idx}" type="text" value="${escapeHtml(val)}" oninput="updateShortAnswerDraft(${idx}, this.value)" placeholder="Nhập đáp án của em vào khung này (VD: 3,5 hoặc -12)..." class="flex-1 min-w-[200px] px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-              <button type="submit" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold shrink-0">Kiểm tra</button>
+            <form onsubmit="${state.quizExamMode ? 'event.preventDefault()' : `submitShortAnswerQuestion(event, ${idx})`}" class="flex flex-wrap sm:flex-nowrap items-center gap-2">
+              <input ${state.quizLocked ? 'disabled' : ''} id="quiz-sa-input-${idx}" type="text" value="${escapeHtml(val)}" oninput="updateShortAnswerDraft(${idx}, this.value)" placeholder="Nhập đáp án của em vào khung này (VD: 3,5 hoặc -12)..." class="flex-1 min-w-[200px] px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-100">
+              ${!state.quizExamMode ? `<button ${state.quizLocked ? 'disabled' : ''} type="submit" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-xs sm:text-sm font-semibold shrink-0">Kiểm tra</button>` : ''}
             </form>
             ${submitted ? `
               <div class="p-3 rounded-xl text-xs leading-relaxed ${ok ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-amber-50 text-amber-900 border border-amber-200'}">
@@ -2897,35 +3377,66 @@ $$S_n = \\frac{n(u_1 + u_n)}{2}$$`,
           </div>
         `;
       }).join('') + `</div>`;
+
+      if (state.quizExamMode && !state.quizExamSubmitted && questions.length > 0) {
+        html += `
+          <div class="mt-6 pt-5 border-t border-slate-200 flex justify-end">
+            <button onclick="if(confirm('Em chắc chắn muốn nộp bài ngay?')) submitExamQuiz(false)"
+              class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold shadow-sm transition">
+              📝 Nộp bài &amp; Chấm điểm
+            </button>
+          </div>`;
+      }
       container.innerHTML = html;
     }
-    function answerQuizQuestion(idx, oIdx) { state.quizAnswers[idx] = oIdx; renderQuizQuestions(); }
+
+    function answerQuizQuestion(idx, oIdx) {
+      if (state.quizLocked) return;
+      state.quizAnswers[idx] = oIdx;
+      renderQuizQuestions();
+    }
     function answerTrueFalseItem(idx, sIdx, val) {
+      if (state.quizLocked) return;
       const cur = state.quizAnswers[idx] || { choices: {}, checked: false };
       cur.choices[sIdx] = val; cur.checked = false;
       state.quizAnswers[idx] = cur;
       renderQuizQuestions();
     }
     function checkTrueFalseQuestion(idx) {
+      if (state.quizLocked) return;
       const cur = state.quizAnswers[idx];
       if (!cur) return;
       cur.checked = true;
       renderQuizQuestions();
     }
     function updateShortAnswerDraft(idx, val) {
+      if (state.quizLocked) return;
       state.quizAnswers[idx] = { value: val, submitted: false };
+      if (state.quizExamMode) updateExamProgressUI();
     }
     function submitShortAnswerQuestion(e, idx) {
       e.preventDefault();
+      if (state.quizLocked) return;
       const inputEl = document.getElementById(`quiz-sa-input-${idx}`);
       const val = inputEl ? inputEl.value : (state.quizAnswers[idx]?.value || '');
       if (!val.trim()) return;
       state.quizAnswers[idx] = { value: val, submitted: true };
       renderQuizQuestions();
     }
-    function resetCurrentQuiz() { state.quizAnswers = {}; state.quizFilterWrongOnly = false; renderQuizQuestions(); }
+    function resetCurrentQuiz() {
+      state.quizAnswers = {};
+      state.quizFilterWrongOnly = false;
+      state.quizExamSubmitted = false;
+      state.quizLocked = false;
+      if (state.quizTimerTotalSeconds > 0) {
+        state.quizTimeLeft = state.quizTimerTotalSeconds;
+        startQuizTimer();
+      }
+      renderQuizQuestions();
+    }
     function toggleQuizWrongOnly() { state.quizFilterWrongOnly = !state.quizFilterWrongOnly; renderQuizQuestions(); }
 
+    
     // ==================== TEACHER VIEW ====================
     function syncTeacherSelection() {
       const c = state.courses.find(x => x.id === state.teacherCourseId) || state.courses[0];
@@ -3630,7 +4141,58 @@ ${mathFormattingRule}`;
       });
     }
 
+    // [HUNGSTUDY_TEACHER_PRACTICE_SETTINGS]
+    function renderTeacherPracticeSettingsBox(course) {
+      const box = document.getElementById('teacherPracticeSettingsBox');
+      if (!box) return;
+      const cfg = getCoursePracticeSettings(course);
+      const items = [
+        { key: 'math_thpt', icon: '📐', title: 'Form Toán THPT QG', desc: '12 TN • 4 Đ/S • 6 TLN • 90 phút' },
+        { key: 'physics_thpt', icon: '⚛️', title: 'Form Lý THPT QG', desc: '18 TN • 4 Đ/S • 6 TLN • 50 phút' },
+        { key: 'math_tsa', icon: '🎓', title: 'Form Toán TSA', desc: '40 câu bất kì mọi dạng • 60 phút' },
+        { key: 'free_mix', icon: '🎛️', title: 'Trộn bài tự do', desc: 'HS tự chọn số câu & thời gian' }
+      ];
+      box.innerHTML = `
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b border-slate-100">
+          <div>
+            <h3 class="font-bold text-slate-900 text-sm">⚙️ Bật / Tắt Form thi thử &amp; Trộn đề cho khóa: <span class="text-indigo-600">${escapeHtml(course.name)}</span></h3>
+            <p class="text-xs text-slate-500">Học sinh trong khóa này sẽ chỉ thấy các Form được thầy bật ON dưới đây.</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+          ${items.map(it => {
+            const on = cfg[it.key];
+            return `
+              <button type="button" onclick="toggleCoursePracticeSetting('${it.key}')"
+                class="text-left p-3 rounded-xl border-2 transition flex flex-col justify-between gap-2 ${on ? 'border-emerald-500 bg-emerald-50/60' : 'border-slate-200 bg-slate-50 opacity-75 hover:opacity-100'}">
+                <div class="flex items-start justify-between gap-2">
+                  <span class="font-bold text-xs text-slate-900">${it.icon} ${it.title}</span>
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold shrink-0 ${on ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-600'}">${on ? 'ON' : 'OFF'}</span>
+                </div>
+                <div class="text-[11px] text-slate-600">${it.desc}</div>
+              </button>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function toggleCoursePracticeSetting(key) {
+      const course = getTeacherCourse();
+      const cfg = getCoursePracticeSettings(course);
+      cfg[key] = !cfg[key];
+      if (!cfg.math_thpt && !cfg.physics_thpt && !cfg.math_tsa && !cfg.free_mix) {
+        cfg.free_mix = true;
+        alert('Cần bật ít nhất 1 chế độ luyện tập (đã tự giữ Trộn bài tự do).');
+      }
+      course.practiceSettings = cfg;
+      saveData();
+      renderTeacherPracticeSettingsBox(course);
+    }
+    // [/HUNGSTUDY_TEACHER_PRACTICE_SETTINGS]
+    
     function renderTeacherPracticeTab(course) {
+      renderTeacherPracticeSettingsBox(course);
       const topics = course.practiceTopics || [];
       document.getElementById('teacherPracticeTopicList').innerHTML = topics.map(t => `
         <button onclick="selectTeacherPracticeTopic('${t.id}')"
