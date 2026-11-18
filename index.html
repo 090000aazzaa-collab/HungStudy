@@ -419,7 +419,7 @@
                 <div class="text-xs font-semibold text-indigo-600 pt-2">Chọn chủ đề →</div>
               </button>
 
-              <button onclick="startMixedQuiz()" class="group text-left bg-white rounded-2xl border-2 border-slate-200 hover:border-emerald-500 p-6 shadow-sm hover:shadow-md transition-all space-y-3">
+              <button onclick="openMixedConfigScreen()" class="group text-left bg-white rounded-2xl border-2 border-slate-200 hover:border-emerald-500 p-6 shadow-sm hover:shadow-md transition-all space-y-3">
                 <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl">🔀</div>
                 <div>
                   <h3 class="text-lg font-bold text-slate-900 group-hover:text-emerald-600">Trộn bài tổng hợp</h3>
@@ -444,6 +444,84 @@
       </div>
             </div>
 
+                        <div id="practiceMixedConfigScreen" class="hidden space-y-5">
+              <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                <div class="lg:col-span-6 bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-3">
+                  <div class="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-100">
+                    <div>
+                      <h3 class="font-bold text-slate-900 text-sm sm:text-base">1. Chọn chủ đề lấy câu hỏi</h3>
+                      <p class="text-xs text-slate-500">Tick vào các chủ đề muốn đưa vào bài trộn</p>
+                    </div>
+                    <button type="button" onclick="toggleAllMixedTopics()" id="btnToggleAllMixedTopics"
+                      class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold shrink-0">
+                      Bỏ chọn tất cả
+                    </button>
+                  </div>
+                  <div id="mixedTopicCheckboxes" class="space-y-2 max-h-80 overflow-y-auto pr-1"></div>
+                </div>
+
+                <div class="lg:col-span-6 bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
+                  <div class="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-100">
+                    <div>
+                      <h3 class="font-bold text-slate-900 text-sm sm:text-base">2. Chọn số câu theo từng dạng</h3>
+                      <p class="text-xs text-slate-500">Hệ thống bốc ngẫu nhiên từ các chủ đề đã chọn</p>
+                    </div>
+                    <button type="button" onclick="fillMaxMixedCounts()"
+                      class="px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-semibold shrink-0">
+                      Lấy tối đa
+                    </button>
+                  </div>
+
+                  <div class="space-y-3">
+                    <div class="p-3.5 rounded-xl border border-indigo-100 bg-indigo-50/40 flex items-center justify-between gap-3">
+                      <div>
+                        <div class="font-bold text-sm text-slate-900">Phần I. Trắc nghiệm (A/B/C/D)</div>
+                        <div class="text-xs text-slate-500 mt-0.5">Kho khả dụng: <strong id="mixedAvailMcq" class="text-indigo-700">0</strong> câu</div>
+                      </div>
+                      <input id="mixedCountMcq" type="number" min="0" value="0"
+                        oninput="onMixedCountInput('mcq', this.value)"
+                        class="w-20 px-3 py-2 rounded-xl border border-slate-300 bg-white text-center font-bold text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <div class="p-3.5 rounded-xl border border-amber-200 bg-amber-50 flex items-center justify-between gap-3">
+                      <div>
+                        <div class="font-bold text-sm text-slate-900">Phần II. Đúng / Sai (4 ý a-d)</div>
+                        <div class="text-xs text-slate-500 mt-0.5">Kho khả dụng: <strong id="mixedAvailTf" class="text-amber-700">0</strong> câu</div>
+                      </div>
+                      <input id="mixedCountTf" type="number" min="0" value="0"
+                        oninput="onMixedCountInput('true_false', this.value)"
+                        class="w-20 px-3 py-2 rounded-xl border border-slate-300 bg-white text-center font-bold text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <div class="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/40 flex items-center justify-between gap-3">
+                      <div>
+                        <div class="font-bold text-sm text-slate-900">Phần III. Trả lời ngắn</div>
+                        <div class="text-xs text-slate-500 mt-0.5">Kho khả dụng: <strong id="mixedAvailSa" class="text-emerald-700">0</strong> câu</div>
+                      </div>
+                      <input id="mixedCountSa" type="number" min="0" value="0"
+                        oninput="onMixedCountInput('short_answer', this.value)"
+                        class="w-20 px-3 py-2 rounded-xl border border-slate-300 bg-white text-center font-bold text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                  </div>
+
+                  <label class="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer text-xs sm:text-sm text-slate-700 font-medium">
+                    <input id="mixedGroupByTypeCheck" type="checkbox" checked onchange="state.mixedConfig.groupByType = this.checked">
+                    <span>Xếp theo 3 phần (Trắc nghiệm → Đúng/Sai → Trả lời ngắn)</span>
+                  </label>
+
+                  <div class="pt-2 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+                    <div class="text-sm text-slate-600">
+                      Tổng đề sẽ tạo: <strong id="mixedSelectedTotalBadge" class="text-indigo-600 text-base">0</strong> câu
+                    </div>
+                    <button id="btnStartCustomMixed" onclick="startCustomMixedQuiz()"
+                      class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-sm font-semibold shadow-sm transition">
+                      🔀 Bắt đầu làm bài →
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+  
             <div id="practiceQuizScreen" class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm hidden">
               <div id="quizContainer"><div class="space-y-5">
           <div class="p-5 rounded-2xl border border-slate-200 bg-slate-50/40 space-y-3">
@@ -2074,7 +2152,7 @@ $$S_n = \\frac{n(u_1 + u_n)}{2}$$`,
       loggedInPhone: null, role: 'student', courses: [], authorizedPhones: [], unlockedCourseIds: [],
       activeStudentCourseId: null, studentModule: 'hub', activeTheoryFolderId: null,
       flashcardIndex: 0, flashcardFlipped: false, studentDriveFolderId: null,
-      practiceScreen: 'mode', practiceModeTitle: '', activeQuizQuestions: [], quizAnswers: {}, quizFilterWrongOnly: false,
+      practiceScreen: 'mode', practiceOrigin: 'mode', mixedConfig: { selectedTopicIds: [], counts: { mcq: 0, true_false: 0, short_answer: 0 }, groupByType: true }, practiceModeTitle: '', activeQuizQuestions: [], quizAnswers: {}, quizFilterWrongOnly: false,
       pendingUnlockCourseId: null, pendingUrlCourseId: null,
       teacherCourseId: null, teacherTab: 'theory', teacherTheoryFolderId: null, teacherDriveFolderId: null, teacherPracticeTopicId: null,
       theoryLayout: 'split',
@@ -2473,16 +2551,24 @@ $$S_n = \\frac{n(u_1 + u_n)}{2}$$`,
 
     // Student Module 3: Practice
     function handlePracticeTopBack() {
-      if (state.practiceScreen === 'mode') backToCourseHub();
-      else { state.practiceScreen = 'mode'; renderStudentPractice(getActiveStudentCourse()); }
+      if (state.practiceScreen === 'mode') {
+        backToCourseHub();
+      } else if (state.practiceScreen === 'quiz' && (state.practiceOrigin === 'topicPicker' || state.practiceOrigin === 'mixedConfig')) {
+        state.practiceScreen = state.practiceOrigin;
+        renderStudentPractice(getActiveStudentCourse());
+      } else {
+        state.practiceScreen = 'mode';
+        renderStudentPractice(getActiveStudentCourse());
+      }
     }
     function renderStudentPractice(course) {
       document.getElementById('practiceModeSelector').classList.toggle('hidden', state.practiceScreen !== 'mode');
       document.getElementById('practiceTopicListScreen').classList.toggle('hidden', state.practiceScreen !== 'topicPicker');
+      document.getElementById('practiceMixedConfigScreen').classList.toggle('hidden', state.practiceScreen !== 'mixedConfig');
       document.getElementById('practiceQuizScreen').classList.toggle('hidden', state.practiceScreen !== 'quiz');
 
       const allCount = (course.practiceTopics || []).reduce((acc, t) => acc + (t.questions?.length || 0), 0);
-      document.getElementById('mixedQuizTotalHint').textContent = `Trộn tất cả ${allCount} câu hỏi →`;
+      document.getElementById('mixedQuizTotalHint').textContent = `Chọn chủ đề & số câu từng dạng (Kho: ${allCount} câu) →`;
 
       const backLabel = document.getElementById('practiceBackBtnLabel');
       const titleEl = document.getElementById('practiceHeaderTitle');
@@ -2493,8 +2579,12 @@ $$S_n = \\frac{n(u_1 + u_n)}{2}$$`,
       } else if (state.practiceScreen === 'topicPicker') {
         backLabel.textContent = '← Chọn lại chế độ luyện tập'; titleEl.textContent = 'Ôn theo chủ đề'; scoreBadge.classList.add('hidden');
         renderPracticeTopicsGrid(course);
+      } else if (state.practiceScreen === 'mixedConfig') {
+        backLabel.textContent = '← Chọn lại chế độ luyện tập'; titleEl.textContent = 'Trộn bài — Tùy chọn cấu trúc đề'; scoreBadge.classList.add('hidden');
+        renderMixedConfigScreen(course);
       } else {
-        backLabel.textContent = '← Chọn lại chế độ luyện tập'; titleEl.textContent = state.practiceModeTitle; scoreBadge.classList.remove('hidden');
+        backLabel.textContent = state.practiceOrigin === 'mixedConfig' ? '← Chỉnh lại đề trộn' : (state.practiceOrigin === 'topicPicker' ? '← Chọn chủ đề khác' : '← Chọn lại chế độ luyện tập');
+        titleEl.textContent = state.practiceModeTitle; scoreBadge.classList.remove('hidden');
         renderQuizQuestions();
       }
     }
@@ -2515,20 +2605,142 @@ $$S_n = \\frac{n(u_1 + u_n)}{2}$$`,
     function startTopicQuiz(topicId) {
       const topic = getActiveStudentCourse().practiceTopics.find(t => t.id === topicId);
       if (!topic || !topic.questions.length) return alert('Chủ đề này chưa có câu hỏi nào!');
+      state.practiceOrigin = 'topicPicker';
       state.practiceModeTitle = `Ôn chủ đề: ${topic.name}`;
       state.activeQuizQuestions = topic.questions.map(q => ({ ...structuredClone(q), topicName: topic.name }));
       state.quizAnswers = {}; state.quizFilterWrongOnly = false; state.practiceScreen = 'quiz';
       renderStudentPractice(getActiveStudentCourse());
     }
-    function startMixedQuiz() {
-      let pool = [];
-      (getActiveStudentCourse().practiceTopics || []).forEach(t => (t.questions || []).forEach(q => pool.push({ ...structuredClone(q), topicName: t.name })));
-      if (!pool.length) return alert('Chưa có câu hỏi nào để trộn bài!');
-      for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
-      state.practiceModeTitle = `Trộn bài tổng hợp (${pool.length} câu)`;
-      state.activeQuizQuestions = pool; state.quizAnswers = {}; state.quizFilterWrongOnly = false; state.practiceScreen = 'quiz';
-      renderStudentPractice(getActiveStudentCourse());
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
     }
+    function getMixedPoolByType(course) {
+      const selectedSet = new Set(state.mixedConfig.selectedTopicIds);
+      const pools = { mcq: [], true_false: [], short_answer: [] };
+      (course.practiceTopics || []).forEach(t => {
+        if (!selectedSet.has(t.id)) return;
+        (t.questions || []).forEach(q => {
+          const qt = getQuestionType(q);
+          pools[qt].push({ ...structuredClone(q), topicName: t.name });
+        });
+      });
+      return pools;
+    }
+    function openMixedConfigScreen() {
+      const course = getActiveStudentCourse();
+      const topics = course.practiceTopics || [];
+      const totalQ = topics.reduce((sum, t) => sum + (t.questions?.length || 0), 0);
+      if (!totalQ) return alert('Khóa học này chưa có câu hỏi nào để trộn bài!');
+      state.mixedConfig.selectedTopicIds = topics.map(t => t.id);
+      state.mixedConfig.groupByType = true;
+      const pools = getMixedPoolByType(course);
+      state.mixedConfig.counts = { mcq: pools.mcq.length, true_false: pools.true_false.length, short_answer: pools.short_answer.length };
+      state.practiceScreen = 'mixedConfig';
+      renderStudentPractice(course);
+    }
+    function renderMixedConfigScreen(course) {
+      const topics = course.practiceTopics || [];
+      const selectedSet = new Set(state.mixedConfig.selectedTopicIds);
+      document.getElementById('mixedTopicCheckboxes').innerHTML = topics.map(t => {
+        const qs = t.questions || [];
+        const cMcq = qs.filter(q => getQuestionType(q) === 'mcq').length;
+        const cTf = qs.filter(q => getQuestionType(q) === 'true_false').length;
+        const cSa = qs.filter(q => getQuestionType(q) === 'short_answer').length;
+        const checked = selectedSet.has(t.id);
+        return `
+          <label class="flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition ${checked ? 'border-indigo-300 bg-indigo-50/40' : 'border-slate-200 bg-slate-50/50 hover:bg-slate-50'}">
+            <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleMixedTopic('${t.id}')" class="mt-1 rounded border-slate-300">
+            <div class="min-w-0 flex-1">
+              <div class="font-semibold text-xs sm:text-sm text-slate-900">${escapeHtml(t.name)}</div>
+              <div class="flex flex-wrap gap-1.5 mt-1 text-[11px]">
+                <span class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-700 font-medium">${cMcq} TN</span>
+                <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 font-medium">${cTf} Đ/S</span>
+                <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-700 font-medium">${cSa} TLN</span>
+              </div>
+            </div>
+          </label>
+        `;
+      }).join('');
+      const allSelected = topics.length > 0 && topics.every(t => selectedSet.has(t.id));
+      document.getElementById('btnToggleAllMixedTopics').textContent = allSelected ? 'Bỏ chọn tất cả' : 'Chọn tất cả';
+      document.getElementById('mixedGroupByTypeCheck').checked = state.mixedConfig.groupByType;
+      refreshMixedPoolsAndInputs(course);
+    }
+    function refreshMixedPoolsAndInputs(course = getActiveStudentCourse()) {
+      const pools = getMixedPoolByType(course);
+      const maxMap = { mcq: pools.mcq.length, true_false: pools.true_false.length, short_answer: pools.short_answer.length };
+      document.getElementById('mixedAvailMcq').textContent = maxMap.mcq;
+      document.getElementById('mixedAvailTf').textContent = maxMap.true_false;
+      document.getElementById('mixedAvailSa').textContent = maxMap.short_answer;
+      const inputMap = { mcq: 'mixedCountMcq', true_false: 'mixedCountTf', short_answer: 'mixedCountSa' };
+      Object.entries(inputMap).forEach(([type, elId]) => {
+        const inp = document.getElementById(elId);
+        const clamped = Math.max(0, Math.min(maxMap[type], Number(state.mixedConfig.counts[type]) || 0));
+        state.mixedConfig.counts[type] = clamped;
+        inp.max = maxMap[type];
+        if (Number(inp.value) !== clamped) inp.value = clamped;
+      });
+      updateMixedTotalSummary();
+    }
+    function updateMixedTotalSummary() {
+      const { mcq, true_false, short_answer } = state.mixedConfig.counts;
+      const total = mcq + true_false + short_answer;
+      document.getElementById('mixedSelectedTotalBadge').textContent = total;
+      document.getElementById('btnStartCustomMixed').disabled = total <= 0;
+    }
+    function toggleMixedTopic(topicId) {
+      const idx = state.mixedConfig.selectedTopicIds.indexOf(topicId);
+      if (idx >= 0) state.mixedConfig.selectedTopicIds.splice(idx, 1);
+      else state.mixedConfig.selectedTopicIds.push(topicId);
+      renderMixedConfigScreen(getActiveStudentCourse());
+    }
+    function toggleAllMixedTopics() {
+      const course = getActiveStudentCourse();
+      const topics = course.practiceTopics || [];
+      const allSelected = topics.length > 0 && topics.every(t => state.mixedConfig.selectedTopicIds.includes(t.id));
+      state.mixedConfig.selectedTopicIds = allSelected ? [] : topics.map(t => t.id);
+      renderMixedConfigScreen(course);
+    }
+    function onMixedCountInput(type, rawVal) {
+      const course = getActiveStudentCourse();
+      const maxAvail = getMixedPoolByType(course)[type].length;
+      let val = parseInt(rawVal, 10);
+      if (Number.isNaN(val) || val < 0) val = 0;
+      if (val > maxAvail) {
+        val = maxAvail;
+        document.getElementById(type === 'mcq' ? 'mixedCountMcq' : (type === 'true_false' ? 'mixedCountTf' : 'mixedCountSa')).value = val;
+      }
+      state.mixedConfig.counts[type] = val;
+      updateMixedTotalSummary();
+    }
+    function fillMaxMixedCounts() {
+      const course = getActiveStudentCourse();
+      const pools = getMixedPoolByType(course);
+      state.mixedConfig.counts = { mcq: pools.mcq.length, true_false: pools.true_false.length, short_answer: pools.short_answer.length };
+      refreshMixedPoolsAndInputs(course);
+    }
+    function startCustomMixedQuiz() {
+      const course = getActiveStudentCourse();
+      const pools = getMixedPoolByType(course);
+      const { mcq, true_false, short_answer } = state.mixedConfig.counts;
+      const pMcq = shuffleArray(pools.mcq).slice(0, mcq);
+      const pTf = shuffleArray(pools.true_false).slice(0, true_false);
+      const pSa = shuffleArray(pools.short_answer).slice(0, short_answer);
+      let finalQuestions = [...pMcq, ...pTf, ...pSa];
+      if (!finalQuestions.length) return alert('Vui lòng chọn ít nhất 1 câu hỏi để bắt đầu!');
+      if (!state.mixedConfig.groupByType) finalQuestions = shuffleArray(finalQuestions);
+      state.practiceOrigin = 'mixedConfig';
+      state.practiceModeTitle = `Đề trộn (${pMcq.length} TN • ${pTf.length} Đ/S • ${pSa.length} TLN)`;
+      state.activeQuizQuestions = finalQuestions;
+      state.quizAnswers = {}; state.quizFilterWrongOnly = false; state.practiceScreen = 'quiz';
+      renderStudentPractice(course);
+    }
+    
     const TF_LABELS = ['a', 'b', 'c', 'd'];
     function getQuestionType(q) {
       if (q && (q.type === 'true_false' || q.type === 'short_answer' || q.type === 'mcq')) return q.type;
