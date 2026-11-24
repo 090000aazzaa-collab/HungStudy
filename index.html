@@ -2179,13 +2179,36 @@
     });
   }
 
-  /* ================= INJECT 4TH CARD INTO EACH STUDENT FOLDER ================= */
+ /* ================= INJECT 4TH CARD INTO EACH STUDENT FOLDER ================= */
+  function normTxt(s) {
+    return String(s || "")
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/đ/g, "d").replace(/Đ/g, "D")
+      .toLowerCase().replace(/\s+/g, " ").trim();
+  }
+
+  function findPracticeElement() {
+    const els = document.querySelectorAll("h1, h2, h3, h4, h5, button, div, span, p");
+    let fallback = null;
+    for (const el of els) {
+      if (el.closest("#hs-exam-overlay") || el.closest('[data-hs-exam-card="1"]')) continue;
+      const t = normTxt(el.textContent);
+      if (!t || t.length > 40) continue;
+      if (/^3\s*[\.\-\)]\s*luyen\s*tap$/.test(t) || (el.children.length === 0 && t.includes("3.") && t.includes("luyen tap"))) {
+        if (/^H[1-6]$/.test(el.tagName)) return el;
+        fallback = el;
+      }
+    }
+    return fallback;
+  }
+
   function detectCourseHeading(gridEl) {
     const headings = document.querySelectorAll("h2, h1");
     for (const h of headings) {
       if (h.closest("#hs-exam-overlay") || gridEl.contains(h)) continue;
       const t = (h.textContent || "").trim();
-      if (t && !/hungstudy|1\.\s*học|2\.\s*tài|3\.\s*luyện|4\.\s*thi/i.test(t)) {
+      const nt = normTxt(t);
+      if (t && !/hungstudy|1\.\s*hoc|2\.\s*tai|3\.\s*luyen|4\.\s*thi/.test(nt)) {
         return t;
       }
     }
@@ -2203,24 +2226,15 @@
 
   function injectCourseExamCard() {
     injectStyles();
-    const h3List = document.querySelectorAll("h3");
-    let practiceH3 = null;
-    for (const h3 of h3List) {
-      if (h3.closest("#hs-exam-overlay")) continue;
-      if (/^\s*3\.\s*Luyện\s*tập\s*$/i.test(h3.textContent || "")) {
-        practiceH3 = h3;
-        break;
-      }
-    }
-    if (!practiceH3) return;
+    const practiceEl = findPracticeElement();
+    if (!practiceEl) return;
 
-    // Walk up to find the card element whose parent holds all 3 cards
-    let cardEl = practiceH3;
+    let cardEl = practiceEl;
     let gridEl = null;
-    for (let depth = 0; depth < 6 && cardEl && cardEl.parentElement; depth++) {
+    for (let depth = 0; depth < 12 && cardEl && cardEl.parentElement; depth++) {
       const p = cardEl.parentElement;
-      const txt = (p.textContent || "").toLowerCase();
-      if (txt.includes("1. học lý thuyết") && txt.includes("2. tài liệu") && p.children.length >= 3) {
+      const pNorm = normTxt(p.textContent);
+      if (pNorm.includes("hoc ly thuyet") && pNorm.includes("tai lieu") && pNorm.includes("luyen tap")) {
         gridEl = p;
         break;
       }
@@ -2230,7 +2244,6 @@
 
     gridEl.classList.add("hs-exam-4grid");
 
-    // Update "Chọn một trong 3 phần" -> "4 phần"
     document.querySelectorAll("p, div").forEach(el => {
       if (el.children.length === 0 && (el.textContent || "").includes("Chọn một trong 3 phần")) {
         el.textContent = el.textContent.replace("Chọn một trong 3 phần", "Chọn một trong 4 phần");
@@ -2249,13 +2262,23 @@
       existing.remove();
     }
 
-    const examCard = cardEl.cloneNode(false);
+    const examCard = document.createElement("button");
+    examCard.type = "button";
+    examCard.className = cardEl.className || "";
     examCard.setAttribute("data-hs-exam-card", "1");
     examCard.dataset.courseKey = courseKey;
-    examCard.style.cursor = "pointer";
-    examCard.style.display = "flex";
-    examCard.style.flexDirection = "column";
-    examCard.style.textAlign = "left";
+    Object.assign(examCard.style, {
+      cursor: "pointer",
+      display: "flex",
+      flexDirection: "column",
+      textAlign: "left",
+      width: "100%",
+      background: "#ffffff",
+      border: "1px solid #e2e8f0",
+      borderRadius: "16px",
+      padding: "24px",
+      boxShadow: "0 1px 3px rgba(15,23,42,0.06)"
+    });
 
     const count = state.allExams.filter(ex => ex.courseKey === courseKey).length;
     examCard.innerHTML = `
@@ -2263,7 +2286,7 @@
       <h3 style="font-size:18px;font-weight:700;color:#0f172a;margin:0 0 8px 0">4. Thi thật</h3>
       <p style="font-size:14px;color:#64748b;line-height:1.55;margin:0 0 20px 0;flex:1">Làm đề kiểm tra chuẩn phòng thi THPT / TSA, chấm điểm tự động và giới hạn 1 lượt.</p>
       <div style="display:flex;align-items:center;justify-content:space-between;width:100%;font-size:13.5px;padding-top:12px;border-top:1px solid #f1f5f9;margin-top:auto">
-        <span data-hs-exam-count="1" style="color:#64748b;font-weight:500">${count} đề thi thật</span>
+        <span data-hs-exam-count="1" style="color:#4f46e5;font-weight:500">${count} đề thi thật</span>
         <span style="color:#dc2626;font-weight:600">Vào phòng thi →</span>
       </div>
     `;
@@ -2274,19 +2297,22 @@
       openExamHub(courseKey, courseName);
     };
 
-    gridEl.appendChild(examCard);
+    cardEl.insertAdjacentElement("afterend", examCard);
   }
 
-  window.addEventListener("DOMContentLoaded", () => {
+  function bootExamInjector() {
     preloadAllExams();
     injectCourseExamCard();
-    let timer = null;
-    const obs = new MutationObserver(() => {
-      clearTimeout(timer);
-      timer = setTimeout(injectCourseExamCard, 180);
-    });
-    obs.observe(document.body, { childList: true, subtree: true });
-  });
+    setInterval(injectCourseExamCard, 700);
+    const obs = new MutationObserver(() => injectCourseExamCard());
+    if (document.body) obs.observe(document.body, { childList: true, subtree: true });
+  }
+
+  if (document.readyState === "loading") {
+    window.addEventListener("DOMContentLoaded", bootExamInjector);
+  } else {
+    bootExamInjector();
+  }
 })();
 </script>
 <script id="hungstudy-seed">
