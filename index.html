@@ -2300,12 +2300,10 @@
     cardEl.insertAdjacentElement("afterend", examCard);
   }
 
-  function bootExamInjector() {
+ function bootExamInjector() {
     preloadAllExams();
     injectCourseExamCard();
-    setInterval(injectCourseExamCard, 700);
-    const obs = new MutationObserver(() => injectCourseExamCard());
-    if (document.body) obs.observe(document.body, { childList: true, subtree: true });
+    setInterval(injectCourseExamCard, 800);
   }
 
   if (document.readyState === "loading") {
