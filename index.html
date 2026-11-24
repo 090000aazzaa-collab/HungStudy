@@ -475,11 +475,10 @@
     }
   }
 
-  function escHtml(str) {
-    return String(str == null ? "" : str)
-      .replace(/&/g, "&").replace(/</g, "<")
-      .replace(/>/g, ">").replace(/"/g, """);
-  }
+ function escHtml(str) {
+  const m = { "&": "\x26amp;", "<": "\x26lt;", ">": "\x26gt;", '"': "\x26quot;" };
+  return String(str == null ? "" : str).replace(/[&<>"]/g, c => m[c]);
+}
 
   function renderMath(text) {
     const raw = String(text == null ? "" : text);
