@@ -2360,16 +2360,16 @@
   function detectCourseHeading(gridEl) {
     const headings = document.querySelectorAll("h2, h1");
     for (const h of headings) {
-      if (h.closest("#hs-exam-overlay") || gridEl.contains(h)) continue;
-      const t = (h.textContent || "").trim();
-      const nt = normTxt(t);
-      if (t && !/hungstudy|phong quan tri|1\.\s*hoc|2\.\s*tai|3\.\s*luyen|4\.\s*thi/.test(nt)) {
-        return t;
-      }
+        if (h.closest("#hs-exam-overlay") || gridEl.contains(h)) continue;
+        if (h.offsetParent === null) continue; // Bỏ qua các khung đang bị ẩn
+        const t = (h.textContent || "").trim();
+        const nt = normTxt(t);
+        if (t && !/hungstudy|phong quan tri|xac thuc|dang nhap|1\.\s*hoc|2\.\s*tai|3\.\s*luyen|4\.\s*thi/.test(nt)) {
+            return t;
+        }
     }
     return "Khóa học mặc định";
-  }
-
+}
   function updateInjectedCardCount() {
     const card = document.querySelector('[data-hs-exam-card="1"]');
     if (!card) return;
