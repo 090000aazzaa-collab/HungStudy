@@ -126,12 +126,10 @@
   });
 })();
 </script>
-   <script id="hungstudy-exam-module">
+  <script id="hungstudy-exam-module">
 (function () {
   const FB_BASE = "https://hungstudy-c21a8-default-rtdb.asia-southeast1.firebasedatabase.app";
-  const DEFAULT_PIN = "123456";
   const USER_STORE_KEY = "hs_exam_student_profile";
-  const ADMIN_SESSION_KEY = "hs_exam_admin_ok";
 
   const EXAM_TYPES = {
     toan_thpt: {
@@ -174,16 +172,17 @@
 
   let state = {
     open: false,
+    mode: "student", // student | teacher
     view: "list", // list | exam | review | creator | scoreboard | import
     currentCourseKey: "",
     currentCourseName: "",
+    teacherCourses: [],
     filterType: "all",
     allExams: [],
     exams: [],
+    allAttempts: {},
     myAttempts: {},
     connected: true,
-    isAdmin: sessionStorage.getItem(ADMIN_SESSION_KEY) === "1",
-    adminPin: DEFAULT_PIN,
     activeExam: null,
     currentIndex: 0,
     answers: {},
@@ -216,6 +215,13 @@
       @media (min-width: 640px) and (max-width: 1023px) {
         .hs-exam-4grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
       }
+      .hs-teacher-exam-tab {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 8px 14px; border-radius: 10px; font-size: 13.5px; font-weight: 600;
+        color: #b91c1c; background: #fef2f2; border: 1px solid #fecaca;
+        cursor: pointer; transition: all .15s; white-space: nowrap;
+      }
+      .hs-teacher-exam-tab:hover { background: #dc2626; color: #fff; border-color: #dc2626; }
       #hs-exam-overlay {
         position: fixed; inset: 0; z-index: 99990;
         background: #f8fafc; color: #0f172a;
@@ -224,9 +230,9 @@
       }
       #hs-exam-overlay * { box-sizing: border-box; }
       .hse-topbar {
-        height: 58px; background: #fff; border-bottom: 1px solid #e2e8f0;
+        min-height: 58px; background: #fff; border-bottom: 1px solid #e2e8f0;
         display: flex; align-items: center; justify-content: space-between;
-        padding: 0 20px; flex-shrink: 0; gap: 12px;
+        padding: 8px 20px; flex-shrink: 0; gap: 12px; flex-wrap: wrap;
       }
       .hse-brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15.5px; min-width: 0; }
       .hse-logo {
@@ -343,7 +349,7 @@
       .hse-sa-box { margin-top: 18px; }
       .hse-input {
         width: 100%; padding: 10px 14px; border: 1.5px solid #cbd5e1;
-        border-radius: 8px; font-size: 15px; outline: none; background: #fff;
+        border-radius: 8px; font-size: 14.5px; outline: none; background: #fff;
       }
       .hse-input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
 
@@ -452,7 +458,7 @@
     document.head.appendChild(style);
   }
 
-  /* ================= KATEX LOADER & RENDERER ================= */
+  /* ================= KATEX & TEXT HELPERS ================= */
   function ensureKaTeX() {
     if (window.katex) return;
     if (!document.getElementById("hs-katex-css")) {
@@ -474,6 +480,18 @@
   function escHtml(str) {
     const m = { "&": "\x26amp;", "<": "\x26lt;", ">": "\x26gt;", '"': "\x26quot;" };
     return String(str == null ? "" : str).replace(/[&<>"]/g, c => m[c]);
+  }
+
+  function normTxt(s) {
+    return String(s || "")
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/đ/g, "d").replace(/Đ/g, "D")
+      .toLowerCase().replace(/\s+/g, " ").trim();
+  }
+
+  function sanitizeKey(str) {
+    return normTxt(str || "chung")
+      .replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "").slice(0, 64) || "chung";
   }
 
   function renderMath(text) {
@@ -537,17 +555,11 @@
     state.connected = true;
   }
 
-  /* ================= HELPERS & IDENTITY ================= */
-  function sanitizeKey(str) {
-    return String(str || "chung")
-      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "").slice(0, 64) || "chung";
-  }
-
+  /* ================= IDENTITY & COURSE DETECTION ================= */
   function detectDefaultType(courseName) {
-    const s = String(courseName || "").toLowerCase();
-    if (s.includes("tsa") || s.includes("tư duy") || s.includes("tu duy")) return "toan_tsa";
-    if (s.includes("vật lý") || s.includes("vat ly") || s.includes("vật lí") || /\blý\b|\blí\b/i.test(s)) return "ly_thpt";
+    const s = normTxt(courseName);
+    if (s.includes("tsa") || s.includes("tu duy")) return "toan_tsa";
+    if (s.includes("vat ly") || s.includes("vat li") || /\bly\b|\bli\b/.test(s)) return "ly_thpt";
     return "toan_thpt";
   }
 
@@ -602,6 +614,83 @@
     const prof = { name: name.trim(), id: id.trim(), key: sanitizeKey(id.trim() || name.trim()) };
     localStorage.setItem(USER_STORE_KEY, JSON.stringify(prof));
     return prof;
+  }
+
+  function detectTeacherContext() {
+    let selectedName = "";
+    const courses = [];
+    const seen = new Set();
+
+    // 1. Read "Khóa học đang chọn:" input
+    const allEls = document.querySelectorAll("label, span, div, p");
+    for (const el of allEls) {
+      if (el.closest("#hs-exam-overlay")) continue;
+      if (el.children.length === 0 && normTxt(el.textContent).includes("khoa hoc dang chon")) {
+        const parent = el.parentElement;
+        if (parent) {
+          const inp = parent.querySelector("input");
+          if (inp && inp.value && inp.value.trim()) {
+            selectedName = inp.value.trim();
+          }
+        }
+        break;
+      }
+    }
+
+    // 2. Collect course pill buttons inside the teacher header card
+    const headerCard = (() => {
+      for (const el of document.querySelectorAll("h1, h2, h3, div")) {
+        if (el.closest("#hs-exam-overlay")) continue;
+        if (el.children.length === 0 && normTxt(el.textContent).includes("phong quan tri")) {
+          let p = el.parentElement;
+          for (let d = 0; d < 5 && p; d++) {
+            if (normTxt(p.textContent).includes("khoa hoc dang chon")) return p;
+            p = p.parentElement;
+          }
+        }
+      }
+      return null;
+    })();
+
+    if (headerCard) {
+      headerCard.querySelectorAll("button").forEach(b => {
+        const t = (b.textContent || "").trim();
+        const nt = normTxt(t);
+        if (!t || nt.includes("tao khoa hoc") || nt.includes("khoi phuc") || nt.includes("xoa khoa")) return;
+        const k = sanitizeKey(t);
+        if (!seen.has(k)) {
+          seen.add(k);
+          courses.push({ key: k, name: t });
+        }
+      });
+    }
+
+    if (selectedName) {
+      const sk = sanitizeKey(selectedName);
+      if (!seen.has(sk)) {
+        seen.add(sk);
+        courses.unshift({ key: sk, name: selectedName });
+      }
+    } else if (courses.length) {
+      selectedName = courses[0].name;
+    } else {
+      selectedName = "Khóa học mặc định";
+      courses.push({ key: sanitizeKey(selectedName), name: selectedName });
+    }
+
+    // Also include any courses referenced by existing cloud exams
+    state.allExams.forEach(ex => {
+      if (ex.courseKey && ex.courseName && !seen.has(ex.courseKey)) {
+        seen.add(ex.courseKey);
+        courses.push({ key: ex.courseKey, name: ex.courseName });
+      }
+    });
+
+    return {
+      courseKey: sanitizeKey(selectedName),
+      courseName: selectedName,
+      courses
+    };
   }
 
   /* ================= PRACTICE BANK EXTRACTOR ================= */
@@ -830,33 +919,42 @@
 
   /* ================= DATA LOADING ================= */
   async function preloadAllExams() {
-    const [examsObj, pinVal] = await Promise.all([
-      fbGet("hungstudy_exams"),
-      fbGet("hungstudy_exam_config/pin")
-    ]);
-    if (pinVal) state.adminPin = String(pinVal);
+    const examsObj = await fbGet("hungstudy_exams");
     state.allExams = examsObj
       ? Object.values(examsObj).filter(Boolean).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
       : [];
     updateInjectedCardCount();
   }
 
+  function refreshFilteredExams() {
+    if (state.mode === "teacher" && state.currentCourseKey === "__all__") {
+      state.exams = [...state.allExams];
+    } else {
+      state.exams = state.allExams.filter(ex => ex.courseKey === state.currentCourseKey);
+    }
+  }
+
   async function loadHubData() {
     await preloadAllExams();
-    state.exams = state.allExams.filter(ex => ex.courseKey === state.currentCourseKey);
+    refreshFilteredExams();
 
-    const prof = getStudentProfile();
-    state.myAttempts = {};
-    if (prof && state.exams.length) {
-      await Promise.all(state.exams.map(async (ex) => {
-        const att = await fbGet(`hungstudy_attempts/${ex.id}/${prof.key}`);
-        if (att) state.myAttempts[ex.id] = att;
-      }));
+    if (state.mode === "teacher") {
+      const attObj = await fbGet("hungstudy_attempts");
+      state.allAttempts = attObj || {};
+    } else {
+      const prof = getStudentProfile();
+      state.myAttempts = {};
+      if (prof && state.exams.length) {
+        await Promise.all(state.exams.map(async (ex) => {
+          const att = await fbGet(`hungstudy_attempts/${ex.id}/${prof.key}`);
+          if (att) state.myAttempts[ex.id] = att;
+        }));
+      }
     }
     if (state.open) render();
   }
 
-  /* ================= EXAM LIFECYCLE ================= */
+  /* ================= EXAM LIFECYCLE (STUDENT) ================= */
   function draftKey(examId, userKey) {
     return `hs_exam_draft_${examId}_${userKey}`;
   }
@@ -1048,15 +1146,17 @@
     return el;
   }
 
-  function openExamHub(courseKey, courseName) {
+  function openExamHub(courseKey, courseName, mode, teacherCourses) {
     injectStyles();
     ensureKaTeX();
+    state.mode = mode || "student";
     state.currentCourseKey = courseKey;
     state.currentCourseName = courseName;
+    state.teacherCourses = teacherCourses || [{ key: courseKey, name: courseName }];
     state.filterType = "all";
     state.open = true;
     state.view = "list";
-    state.exams = state.allExams.filter(ex => ex.courseKey === courseKey);
+    refreshFilteredExams();
     render();
     loadHubData();
   }
@@ -1092,27 +1192,32 @@
     else if (state.view === "import") renderImportView(root);
   }
 
-  /* ---------- VIEW 1: COURSE EXAM LIST ---------- */
+  /* ---------- VIEW 1: HUB LIST (SEPARATED STUDENT VS TEACHER) ---------- */
   function renderHubList(root) {
+    const isTeacher = state.mode === "teacher";
     const prof = getStudentProfile();
     const filtered = state.exams.filter(ex => state.filterType === "all" || ex.type === state.filterType);
-    const otherExamsCount = state.allExams.filter(ex => ex.courseKey !== state.currentCourseKey).length;
+    const otherExamsCount = isTeacher && state.currentCourseKey !== "__all__"
+      ? state.allExams.filter(ex => ex.courseKey !== state.currentCourseKey).length
+      : 0;
 
     root.innerHTML = `
       <div class="hse-topbar">
         <div class="hse-brand">
-          <button class="hse-btn hse-btn-sm" id="hse-close-btn">← Quay lại thư mục</button>
-          <span class="hse-logo">4. THI THẬT</span>
-          <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(state.currentCourseName)}</span>
+          <button class="hse-btn hse-btn-sm" id="hse-close-btn">← ${isTeacher ? "Quay lại Phòng Quản Trị" : "Quay lại thư mục"}</button>
+          <span class="hse-logo" style="background:${isTeacher ? "#1e3a8a" : "#dc2626"}">${isTeacher ? "QUẢN LÝ THI THẬT" : "4. THI THẬT"}</span>
+          ${isTeacher ? `
+            <select class="hse-input" id="hse-teacher-course-sel" style="width:auto;max-width:320px;padding:5px 10px;font-size:13px;font-weight:600">
+              ${state.teacherCourses.map(c => `<option value="${escHtml(c.key)}" ${state.currentCourseKey === c.key ? "selected" : ""}>Khóa: ${escHtml(c.name)}</option>`).join("")}
+              <option value="__all__" ${state.currentCourseKey === "__all__" ? "selected" : ""}>📂 Tất cả các khóa học (${state.allExams.length} đề)</option>
+            </select>
+          ` : `<span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(state.currentCourseName)}</span>`}
         </div>
         <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-          <button class="hse-btn hse-btn-sm" id="hse-edit-prof-btn">👤 ${escHtml(prof ? prof.name : "Chưa nhập tên")}</button>
-          ${state.isAdmin
-            ? `<button class="hse-btn hse-btn-primary hse-btn-sm" id="hse-new-exam-btn">+ Tạo đề mới</button>
-               ${otherExamsCount ? `<button class="hse-btn hse-btn-sm" id="hse-import-btn">📋 Lấy đề lớp khác (${otherExamsCount})</button>` : ""}
-               <button class="hse-btn hse-btn-sm" id="hse-chg-pin-btn">🔑 Đổi PIN</button>
-               <button class="hse-btn hse-btn-sm" id="hse-logout-admin-btn">🔓 Thoát QL</button>`
-            : `<button class="hse-btn hse-btn-sm" id="hse-login-admin-btn">🔒 Quản lý / Tạo đề</button>`
+          ${isTeacher
+            ? `<button class="hse-btn hse-btn-primary hse-btn-sm" id="hse-new-exam-btn">+ Tạo đề thi mới</button>
+               ${otherExamsCount ? `<button class="hse-btn hse-btn-sm" id="hse-import-btn">📋 Lấy đề khóa khác (${otherExamsCount})</button>` : ""}`
+            : `<button class="hse-btn hse-btn-sm" id="hse-edit-prof-btn">👤 ${escHtml(prof ? prof.name : "Chưa nhập tên")}</button>`
           }
         </div>
       </div>
@@ -1131,8 +1236,16 @@
           ${filtered.length === 0 ? `
             <div class="hse-box" style="text-align:center;padding:42px 20px;color:#64748b">
               <div style="font-size:32px;margin-bottom:8px">📝</div>
-              <div style="font-weight:700;font-size:16px;color:#1e293b;margin-bottom:6px">Thư mục "${escHtml(state.currentCourseName)}" chưa có đề thi nào</div>
-              <div style="font-size:13.5px;margin-bottom:14px">Bấm <strong>Quản lý / Tạo đề</strong> (mật khẩu mặc định: <code>123456</code>) để tạo đề riêng cho học sinh/lớp này hoặc nhân bản đề từ lớp khác.</div>
+              <div style="font-weight:700;font-size:16px;color:#1e293b;margin-bottom:6px">
+                ${isTeacher
+                  ? `Khóa "${escHtml(state.currentCourseName)}" chưa có đề thi thật nào`
+                  : `Hiện chưa có đề thi thật nào trong thư mục "${escHtml(state.currentCourseName)}"`}
+              </div>
+              <div style="font-size:13.5px">
+                ${isTeacher
+                  ? `Bấm nút <strong>+ Tạo đề thi mới</strong> ở góc trên để tạo đề từ kho Luyện tập hoặc nhập câu hỏi riêng cho học sinh.`
+                  : `Khi giáo viên giao đề kiểm tra, đề sẽ tự động hiển thị tại đây.`}
+              </div>
             </div>
           ` : `
             <div class="hse-grid-cards">
@@ -1142,6 +1255,32 @@
                 const mcC = qs.filter(q => q.qType === "mc").length;
                 const tfC = qs.filter(q => q.qType === "tf").length;
                 const saC = qs.filter(q => q.qType === "sa").length;
+
+                if (isTeacher) {
+                  const attMap = state.allAttempts[ex.id] || {};
+                  const subCount = Object.keys(attMap).length;
+                  return `
+                    <div class="hse-card">
+                      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+                        <span class="hse-badge" style="background:${cfg.badgeBg};color:${cfg.badgeColor}">${cfg.label}</span>
+                        <span class="hse-code">${escHtml(ex.code || "")}</span>
+                      </div>
+                      <div style="font-weight:700;font-size:16px;color:#0f172a;line-height:1.35">${escHtml(ex.title)}</div>
+                      ${state.currentCourseKey === "__all__" ? `<div style="font-size:12px;color:#4f46e5;font-weight:600">📁 ${escHtml(ex.courseName || "Chưa gắn khóa")}</div>` : ""}
+                      <div style="font-size:12.5px;color:#64748b">
+                        ⏱ ${ex.durationMinutes} phút • 📋 ${qs.length} câu (${mcC} TN • ${tfC} Đ/S • ${saC} TLN)
+                      </div>
+                      ${ex.description ? `<div style="font-size:12.5px;color:#475569">${escHtml(ex.description)}</div>` : ""}
+                      <div style="margin-top:auto;padding-top:10px;border-top:1px solid #f1f5f9;display:flex;gap:6px;flex-wrap:wrap">
+                        <button class="hse-btn hse-btn-primary hse-btn-sm" style="flex:1;justify-content:center" data-scores="${ex.id}">📊 Bảng điểm (${subCount})</button>
+                        <button class="hse-btn hse-btn-sm" data-edit="${ex.id}">✏️ Sửa</button>
+                        <button class="hse-btn hse-btn-sm" style="color:#dc2626" data-del="${ex.id}">🗑️</button>
+                      </div>
+                    </div>
+                  `;
+                }
+
+                // Student card view (clean, read-only, 1 attempt + own score & solutions)
                 const att = state.myAttempts[ex.id];
                 let hasDraft = false;
                 if (!att && prof) {
@@ -1166,24 +1305,17 @@
                     ${ex.description ? `<div style="font-size:12.5px;color:#475569">${escHtml(ex.description)}</div>` : ""}
                     ${att ? `
                       <div style="background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;padding:8px 10px;border-radius:8px;font-size:13px;font-weight:700">
-                        ✅ Đã hoàn thành: ${scoreText}
+                        ✅ Điểm của bạn: ${scoreText}
                       </div>
                     ` : ""}
-                    <div style="margin-top:auto;padding-top:6px;display:flex;gap:8px;flex-wrap:wrap">
+                    <div style="margin-top:auto;padding-top:6px;display:flex;gap:8px">
                       ${att
-                        ? `<button class="hse-btn hse-btn-success" style="flex:1;justify-content:center" data-review="${ex.id}">Xem lại bài và Lời giải</button>`
+                        ? `<button class="hse-btn hse-btn-success" style="flex:1;justify-content:center" data-review="${ex.id}">Xem điểm chi tiết & Lời giải</button>`
                         : `<button class="hse-btn ${hasDraft ? "hse-btn-danger" : "hse-btn-primary"}" style="flex:1;justify-content:center" data-start="${ex.id}">
                              ${hasDraft ? "Tiếp tục làm bài" : "Bắt đầu thi (1 lượt)"}
                            </button>`
                       }
                     </div>
-                    ${state.isAdmin ? `
-                      <div style="display:flex;gap:6px;padding-top:8px;border-top:1px solid #f1f5f9">
-                        <button class="hse-btn hse-btn-sm" style="flex:1;justify-content:center" data-scores="${ex.id}">📊 Bảng điểm</button>
-                        <button class="hse-btn hse-btn-sm" data-edit="${ex.id}">✏️ Sửa</button>
-                        <button class="hse-btn hse-btn-sm" style="color:#dc2626" data-del="${ex.id}">🗑️</button>
-                      </div>
-                    ` : ""}
                   </div>
                 `;
               }).join("")}
@@ -1195,109 +1327,93 @@
 
     root.querySelector("#hse-close-btn").onclick = closeExamHub;
     root.querySelector("#hse-refresh-btn").onclick = loadHubData;
-    root.querySelector("#hse-edit-prof-btn").onclick = () => { promptStudentProfile(true); loadHubData(); };
-
     root.querySelectorAll("[data-ft]").forEach(b => {
       b.onclick = () => { state.filterType = b.dataset.ft; render(); };
     });
 
-    const loginBtn = root.querySelector("#hse-login-admin-btn");
-    if (loginBtn) {
-      loginBtn.onclick = () => {
-        const pin = prompt("Nhập mật khẩu Quản lý / Giáo viên (mặc định: 123456):");
-        if (pin === null) return;
-        if (pin.trim() === state.adminPin) {
-          state.isAdmin = true;
-          sessionStorage.setItem(ADMIN_SESSION_KEY, "1");
+    if (isTeacher) {
+      const sel = root.querySelector("#hse-teacher-course-sel");
+      if (sel) {
+        sel.onchange = () => {
+          const val = sel.value;
+          state.currentCourseKey = val;
+          if (val === "__all__") {
+            state.currentCourseName = "Tất cả khóa học";
+          } else {
+            const found = state.teacherCourses.find(c => c.key === val);
+            state.currentCourseName = found ? found.name : val;
+          }
+          refreshFilteredExams();
           render();
-        } else {
-          alert("Sai mật khẩu quản lý!");
-        }
-      };
+        };
+      }
+
+      const newBtn = root.querySelector("#hse-new-exam-btn");
+      if (newBtn) newBtn.onclick = () => openCreator(null);
+
+      const impBtn = root.querySelector("#hse-import-btn");
+      if (impBtn) impBtn.onclick = () => { state.view = "import"; render(); };
+
+      root.querySelectorAll("[data-edit]").forEach(b => {
+        b.onclick = () => {
+          const ex = state.allExams.find(e => e.id === b.dataset.edit);
+          if (ex) openCreator(JSON.parse(JSON.stringify(ex)));
+        };
+      });
+
+      root.querySelectorAll("[data-del]").forEach(b => {
+        b.onclick = async () => {
+          if (!confirm("Xóa vĩnh viễn đề thi này khỏi Cloud?")) return;
+          await fbDelete(`hungstudy_exams/${b.dataset.del}`);
+          loadHubData();
+        };
+      });
+
+      root.querySelectorAll("[data-scores]").forEach(b => {
+        b.onclick = async () => {
+          const ex = state.allExams.find(e => e.id === b.dataset.scores);
+          if (!ex) return;
+          state.scoreExam = ex;
+          const raw = await fbGet(`hungstudy_attempts/${ex.id}`);
+          state.scoreList = raw ? Object.values(raw).sort((a, b) => (b.result?.score || 0) - (a.result?.score || 0)) : [];
+          state.view = "scoreboard";
+          render();
+        };
+      });
+    } else {
+      const editProf = root.querySelector("#hse-edit-prof-btn");
+      if (editProf) editProf.onclick = () => { promptStudentProfile(true); loadHubData(); };
+
+      root.querySelectorAll("[data-start]").forEach(b => {
+        b.onclick = () => {
+          const ex = state.exams.find(e => e.id === b.dataset.start);
+          if (ex) startOrResumeExam(ex);
+        };
+      });
+
+      root.querySelectorAll("[data-review]").forEach(b => {
+        b.onclick = () => {
+          const ex = state.exams.find(e => e.id === b.dataset.review);
+          if (ex && state.myAttempts[ex.id]) openReview(ex, state.myAttempts[ex.id]);
+        };
+      });
     }
-
-    const logoutBtn = root.querySelector("#hse-logout-admin-btn");
-    if (logoutBtn) {
-      logoutBtn.onclick = () => {
-        state.isAdmin = false;
-        sessionStorage.removeItem(ADMIN_SESSION_KEY);
-        render();
-      };
-    }
-
-    const pinBtn = root.querySelector("#hse-chg-pin-btn");
-    if (pinBtn) {
-      pinBtn.onclick = async () => {
-        const np = prompt("Nhập mật khẩu Quản lý mới (ít nhất 4 ký tự):");
-        if (!np || np.trim().length < 4) return;
-        await fbPut("hungstudy_exam_config/pin", np.trim());
-        state.adminPin = np.trim();
-        alert("Đã đổi mật khẩu Quản lý thành công!");
-      };
-    }
-
-    const newBtn = root.querySelector("#hse-new-exam-btn");
-    if (newBtn) newBtn.onclick = () => openCreator(null);
-
-    const impBtn = root.querySelector("#hse-import-btn");
-    if (impBtn) impBtn.onclick = () => { state.view = "import"; render(); };
-
-    root.querySelectorAll("[data-start]").forEach(b => {
-      b.onclick = () => {
-        const ex = state.exams.find(e => e.id === b.dataset.start);
-        if (ex) startOrResumeExam(ex);
-      };
-    });
-
-    root.querySelectorAll("[data-review]").forEach(b => {
-      b.onclick = () => {
-        const ex = state.exams.find(e => e.id === b.dataset.review);
-        if (ex && state.myAttempts[ex.id]) openReview(ex, state.myAttempts[ex.id]);
-      };
-    });
-
-    root.querySelectorAll("[data-edit]").forEach(b => {
-      b.onclick = () => {
-        const ex = state.exams.find(e => e.id === b.dataset.edit);
-        if (ex) openCreator(JSON.parse(JSON.stringify(ex)));
-      };
-    });
-
-    root.querySelectorAll("[data-del]").forEach(b => {
-      b.onclick = async () => {
-        if (!confirm("Xóa vĩnh viễn đề thi này khỏi thư mục?")) return;
-        await fbDelete(`hungstudy_exams/${b.dataset.del}`);
-        loadHubData();
-      };
-    });
-
-    root.querySelectorAll("[data-scores]").forEach(b => {
-      b.onclick = async () => {
-        const ex = state.exams.find(e => e.id === b.dataset.scores);
-        if (!ex) return;
-        state.scoreExam = ex;
-        const raw = await fbGet(`hungstudy_attempts/${ex.id}`);
-        state.scoreList = raw ? Object.values(raw).sort((a, b) => (b.result?.score || 0) - (a.result?.score || 0)) : [];
-        state.view = "scoreboard";
-        render();
-      };
-    });
   }
 
-  /* ---------- VIEW 1B: IMPORT/CLONE EXAM FROM OTHER FOLDERS ---------- */
+  /* ---------- VIEW 1B: IMPORT/CLONE EXAM FROM OTHER FOLDERS (TEACHER ONLY) ---------- */
   function renderImportView(root) {
     const others = state.allExams.filter(ex => ex.courseKey !== state.currentCourseKey);
     root.innerHTML = `
       <div class="hse-topbar">
         <div class="hse-brand">
           <button class="hse-btn hse-btn-sm" id="hse-imp-back">← Quay lại</button>
-          <span>Lấy đề từ thư mục khác vào "${escHtml(state.currentCourseName)}"</span>
+          <span>Nhân bản đề vào "${escHtml(state.currentCourseName)}"</span>
         </div>
       </div>
       <div class="hse-scroll">
         <div class="hse-container">
           <div class="hse-box">
-            ${others.length === 0 ? `<div style="color:#64748b">Chưa có đề nào ở các thư mục khác.</div>` : `
+            ${others.length === 0 ? `<div style="color:#64748b">Chưa có đề nào ở các khóa học khác.</div>` : `
               <div style="display:flex;flex-direction:column;gap:10px">
                 ${others.map(ex => {
                   const cfg = EXAM_TYPES[ex.type] || EXAM_TYPES.toan_thpt;
@@ -1309,13 +1425,10 @@
                           <strong>${escHtml(ex.title)}</strong>
                         </div>
                         <div style="font-size:12.5px;color:#64748b">
-                          Nguồn: <strong>${escHtml(ex.courseName || "Đề chung (chưa gắn thư mục)")}</strong> • ${(ex.questions || []).length} câu • ${ex.durationMinutes} phút
+                          Nguồn: <strong>${escHtml(ex.courseName || "Đề chung")}</strong> • ${(ex.questions || []).length} câu • ${ex.durationMinutes} phút
                         </div>
                       </div>
-                      <div style="display:flex;gap:8px">
-                        <button class="hse-btn hse-btn-primary hse-btn-sm" data-clone-ex="${ex.id}">📋 Nhân bản vào thư mục này</button>
-                        ${!ex.courseKey ? `<button class="hse-btn hse-btn-sm" data-move-ex="${ex.id}">↪️ Chuyển hẳn vào đây</button>` : ""}
-                      </div>
+                      <button class="hse-btn hse-btn-primary hse-btn-sm" data-clone-ex="${ex.id}">📋 Nhân bản vào khóa này</button>
                     </div>
                   `;
                 }).join("")}
@@ -1336,20 +1449,7 @@
         copy.courseName = state.currentCourseName;
         copy.createdAt = Date.now();
         await fbPut(`hungstudy_exams/${copy.id}`, copy);
-        alert("Đã nhân bản đề vào thư mục này thành công!");
-        state.view = "list";
-        loadHubData();
-      };
-    });
-    root.querySelectorAll("[data-move-ex]").forEach(b => {
-      b.onclick = async () => {
-        const src = state.allExams.find(e => e.id === b.dataset.moveEx);
-        if (!src) return;
-        const moved = JSON.parse(JSON.stringify(src));
-        moved.courseKey = state.currentCourseKey;
-        moved.courseName = state.currentCourseName;
-        await fbPut(`hungstudy_exams/${moved.id}`, moved);
-        alert("Đã chuyển đề vào thư mục này thành công!");
+        alert("Đã nhân bản đề vào khóa học này thành công!");
         state.view = "list";
         loadHubData();
       };
@@ -1621,7 +1721,7 @@
     }
   }
 
-  /* ---------- VIEW 3: REVIEW & RESULTS ---------- */
+  /* ---------- VIEW 3: REVIEW & RESULTS (BOTH STUDENT OWN RESULT & TEACHER INSPECT) ---------- */
   function renderReviewRoom(root) {
     const exam = state.reviewExam;
     const att = state.reviewAttempt;
@@ -1643,7 +1743,7 @@
     root.innerHTML = `
       <div class="hse-topbar">
         <div class="hse-brand">
-          <button class="hse-btn hse-btn-sm" id="hse-rev-back">← Danh sách đề</button>
+          <button class="hse-btn hse-btn-sm" id="hse-rev-back">← ${state.mode === "teacher" ? "Quay lại bảng điểm" : "Danh sách đề"}</button>
           <span class="hse-logo" style="background:#059669">KẾT QUẢ</span>
           <span>${escHtml(exam.title)}</span>
         </div>
@@ -1735,7 +1835,10 @@
       </div>
     `;
 
-    root.querySelector("#hse-rev-back").onclick = () => { state.view = "list"; render(); };
+    root.querySelector("#hse-rev-back").onclick = () => {
+      state.view = state.mode === "teacher" ? "scoreboard" : "list";
+      render();
+    };
     const tog = root.querySelector("#hse-toggle-side");
     if (tog) tog.onclick = () => root.querySelector("#hse-sidebar").classList.toggle("mobile-open");
     root.querySelectorAll("[data-rf]").forEach(b => {
@@ -1756,14 +1859,18 @@
     if (zoomBtn && q && q.image) zoomBtn.onclick = () => showLightbox(q.image);
   }
 
-  /* ---------- VIEW 4: ADMIN EXAM CREATOR ---------- */
+  /* ---------- VIEW 4: TEACHER EXAM CREATOR ---------- */
   function openCreator(existing) {
     state.practiceBank = extractPracticeBank();
-    const defType = detectDefaultType(state.currentCourseName);
+    const targetCourse = state.currentCourseKey !== "__all__"
+      ? { key: state.currentCourseKey, name: state.currentCourseName }
+      : (state.teacherCourses[0] || { key: "chung", name: "Khóa học mặc định" });
+    const defType = detectDefaultType(targetCourse.name);
+
     state.draftExam = existing || {
       id: "exam_" + Date.now(),
-      courseKey: state.currentCourseKey,
-      courseName: state.currentCourseName,
+      courseKey: targetCourse.key,
+      courseName: targetCourse.name,
       title: "",
       code: "DE_" + String(Math.floor(100 + Math.random() * 900)),
       type: defType,
@@ -1787,7 +1894,7 @@
       <div class="hse-topbar">
         <div class="hse-brand">
           <button class="hse-btn hse-btn-sm" id="hse-cr-cancel">← Hủy</button>
-          <span>${ex.title ? "Sửa đề thi" : "Tạo đề mới"} — ${escHtml(state.currentCourseName)}</span>
+          <span>${ex.title ? "Sửa đề thi" : "Tạo đề thi mới"}</span>
         </div>
         <button class="hse-btn hse-btn-success" id="hse-cr-save">💾 Lưu đề lên Cloud (${ex.questions.length} câu)</button>
       </div>
@@ -1796,12 +1903,24 @@
           <div class="hse-box">
             <div class="hse-row">
               <div class="hse-field" style="flex:2">
-                <label class="hse-label">Tên đề thi *</label>
-                <input class="hse-input" id="cr-title" value="${escHtml(ex.title)}" placeholder="VD: Đề kiểm tra Xác suất số 01" />
+                <label class="hse-label">Giao cho thư mục học sinh / khóa học *</label>
+                <select class="hse-input" id="cr-course">
+                  ${state.teacherCourses.map(c => `<option value="${escHtml(c.key)}" ${ex.courseKey === c.key ? "selected" : ""}>${escHtml(c.name)}</option>`).join("")}
+                </select>
               </div>
               <div class="hse-field">
                 <label class="hse-label">Mã đề</label>
                 <input class="hse-input" id="cr-code" value="${escHtml(ex.code)}" placeholder="VD: TSA_01" />
+              </div>
+            </div>
+            <div class="hse-row">
+              <div class="hse-field" style="flex:2">
+                <label class="hse-label">Tên đề thi *</label>
+                <input class="hse-input" id="cr-title" value="${escHtml(ex.title)}" placeholder="VD: Đề kiểm tra Xác suất số 01" />
+              </div>
+              <div class="hse-field" style="max-width:170px">
+                <label class="hse-label">Thời gian (phút)</label>
+                <input type="number" class="hse-input" id="cr-mins" value="${ex.durationMinutes}" min="5" max="240" />
               </div>
             </div>
             <div class="hse-row">
@@ -1811,14 +1930,10 @@
                   ${Object.values(EXAM_TYPES).map(t => `<option value="${t.id}" ${ex.type === t.id ? "selected" : ""}>${t.label} — ${t.desc}</option>`).join("")}
                 </select>
               </div>
-              <div class="hse-field" style="max-width:180px">
-                <label class="hse-label">Thời gian (phút)</label>
-                <input type="number" class="hse-input" id="cr-mins" value="${ex.durationMinutes}" min="5" max="240" />
+              <div class="hse-field">
+                <label class="hse-label">Ghi chú (không bắt buộc)</label>
+                <input class="hse-input" id="cr-desc" value="${escHtml(ex.description || "")}" placeholder="VD: Giới hạn 1 lượt làm, gồm kiến thức Chương Xác suất" />
               </div>
-            </div>
-            <div class="hse-field" style="margin-bottom:0">
-              <label class="hse-label">Ghi chú (không bắt buộc)</label>
-              <input class="hse-input" id="cr-desc" value="${escHtml(ex.description || "")}" placeholder="VD: Giới hạn 1 lượt làm, gồm kiến thức Chương Xác suất" />
             </div>
           </div>
 
@@ -1839,8 +1954,9 @@
                   <label class="hse-label">Chọn nguồn chủ đề muốn bốc:</label>
                   <div style="display:flex;flex-wrap:wrap;gap:10px">
                     ${topics.map(tp => {
-                      const matchCourse = state.currentCourseName && tp.toLowerCase().includes(state.currentCourseName.split("-")[0].trim().toLowerCase());
-                      const checked = topics.length === 1 || matchCourse || !topics.some(x => x.toLowerCase().includes(state.currentCourseName.split("-")[0].trim().toLowerCase()));
+                      const firstPart = (ex.courseName || "").split("-")[0].trim().toLowerCase();
+                      const anyMatch = firstPart && topics.some(x => x.toLowerCase().includes(firstPart));
+                      const checked = topics.length === 1 || !anyMatch || tp.toLowerCase().includes(firstPart);
                       return `<label style="font-size:13px;display:inline-flex;align-items:center;gap:5px"><input type="checkbox" class="cr-topic-cb" value="${escHtml(tp)}" ${checked ? "checked" : ""} /> ${escHtml(tp)}</label>`;
                     }).join("")}
                   </div>
@@ -1892,6 +2008,17 @@
     `;
 
     root.querySelector("#hse-cr-cancel").onclick = () => { state.view = "list"; render(); };
+    root.querySelector("#cr-course").onchange = (e) => {
+      const c = state.teacherCourses.find(x => x.key === e.target.value);
+      if (c) {
+        ex.courseKey = c.key;
+        ex.courseName = c.name;
+        const dt = detectDefaultType(c.name);
+        ex.type = dt;
+        ex.durationMinutes = EXAM_TYPES[dt].defaultMinutes;
+        render();
+      }
+    };
     root.querySelector("#cr-title").oninput = (e) => { ex.title = e.target.value; };
     root.querySelector("#cr-code").oninput = (e) => { ex.code = e.target.value; };
     root.querySelector("#cr-desc").oninput = (e) => { ex.description = e.target.value; };
@@ -1957,11 +2084,13 @@
     root.querySelector("#hse-cr-save").onclick = async () => {
       if (!ex.title.trim()) { alert("Vui lòng nhập Tên đề thi!"); return; }
       if (!ex.questions.length) { alert("Đề thi cần ít nhất 1 câu hỏi!"); return; }
-      ex.courseKey = state.currentCourseKey;
-      ex.courseName = state.currentCourseName;
       try {
         await fbPut(`hungstudy_exams/${ex.id}`, ex);
-        alert("Đã lưu đề thi vào thư mục này lên Cloud thành công!");
+        alert(`Đã lưu đề thi cho khóa "${ex.courseName}" lên Cloud thành công!`);
+        if (state.currentCourseKey !== "__all__") {
+          state.currentCourseKey = ex.courseKey;
+          state.currentCourseName = ex.courseName;
+        }
         state.view = "list";
         loadHubData();
       } catch (e) {
@@ -2109,7 +2238,7 @@
     };
   }
 
-  /* ---------- VIEW 5: ADMIN SCOREBOARD ---------- */
+  /* ---------- VIEW 5: TEACHER SCOREBOARD ---------- */
   function renderScoreboard(root) {
     const ex = state.scoreExam;
     const list = state.scoreList;
@@ -2123,7 +2252,7 @@
       <div class="hse-scroll">
         <div class="hse-container">
           <div class="hse-box" style="overflow-x:auto">
-            ${list.length === 0 ? `<div style="padding:20px;color:#64748b;text-align:center">Chưa có thí sinh nào nộp đề này.</div>` : `
+            ${list.length === 0 ? `<div style="padding:20px;color:#64748b;text-align:center">Chưa có học sinh nào nộp đề này.</div>` : `
               <table class="hse-tf-table" style="margin-top:0">
                 <thead>
                   <tr>
@@ -2148,7 +2277,7 @@
                         <td style="text-align:center">${formatMMSS(att.spentSeconds)}</td>
                         <td style="text-align:center;font-size:12.5px;color:#64748b">${dt}</td>
                         <td style="text-align:center">
-                          <button class="hse-btn hse-btn-sm" data-sc-view="${i}">Xem bài</button>
+                          <button class="hse-btn hse-btn-sm" data-sc-view="${i}">Xem bài làm</button>
                           <button class="hse-btn hse-btn-sm" style="color:#dc2626" data-sc-reset="${escHtml(att.userKey)}">Cho thi lại</button>
                         </td>
                       </tr>
@@ -2162,7 +2291,7 @@
       </div>
     `;
 
-    root.querySelector("#hse-sc-back").onclick = () => { state.view = "list"; render(); };
+    root.querySelector("#hse-sc-back").onclick = () => { state.view = "list"; loadHubData(); };
     root.querySelectorAll("[data-sc-view]").forEach(b => {
       b.onclick = () => openReview(ex, list[Number(b.dataset.scView)]);
     });
@@ -2179,14 +2308,40 @@
     });
   }
 
- /* ================= INJECT 4TH CARD INTO EACH STUDENT FOLDER ================= */
-  function normTxt(s) {
-    return String(s || "")
-      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-      .replace(/đ/g, "d").replace(/Đ/g, "D")
-      .toLowerCase().replace(/\s+/g, " ").trim();
+  /* ================= INJECTOR 1: TEACHER TAB BUTTON ================= */
+  function injectTeacherExamTab() {
+    injectStyles();
+    const btns = document.querySelectorAll("button");
+    let permBtn = null;
+    for (const b of btns) {
+      if (b.closest("#hs-exam-overlay")) continue;
+      const nt = normTxt(b.textContent);
+      if (nt.includes("bao mat") && nt.includes("cap quyen")) {
+        const pNorm = normTxt(b.parentElement ? b.parentElement.textContent : "");
+        if (pNorm.includes("ly thuyet") && pNorm.includes("luyen tap")) {
+          permBtn = b;
+          break;
+        }
+      }
+    }
+    if (!permBtn || !permBtn.parentElement) return;
+    if (permBtn.parentElement.querySelector('[data-hs-teacher-exam-tab="1"]')) return;
+
+    const tab = document.createElement("button");
+    tab.type = "button";
+    tab.className = "hs-teacher-exam-tab";
+    tab.setAttribute("data-hs-teacher-exam-tab", "1");
+    tab.textContent = "📝 5. Thi thật (Quản lý đề)";
+    tab.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const ctx = detectTeacherContext();
+      openExamHub(ctx.courseKey, ctx.courseName, "teacher", ctx.courses);
+    };
+    permBtn.insertAdjacentElement("afterend", tab);
   }
 
+  /* ================= INJECTOR 2: STUDENT FOLDER 4TH CARD ================= */
   function findPracticeElement() {
     const els = document.querySelectorAll("h1, h2, h3, h4, h5, button, div, span, p");
     let fallback = null;
@@ -2194,7 +2349,7 @@
       if (el.closest("#hs-exam-overlay") || el.closest('[data-hs-exam-card="1"]')) continue;
       const t = normTxt(el.textContent);
       if (!t || t.length > 40) continue;
-      if (/^3\s*[\.\-\)]\s*luyen\s*tap$/.test(t) || (el.children.length === 0 && t.includes("3.") && t.includes("luyen tap"))) {
+      if (/^3\s*[\.\-\)]\s*luyen\s*tap$/.test(t) || (el.children.length === 0 && t.includes("3.") && t.includes("luyen tap") && !t.includes("chu de"))) {
         if (/^H[1-6]$/.test(el.tagName)) return el;
         fallback = el;
       }
@@ -2208,7 +2363,7 @@
       if (h.closest("#hs-exam-overlay") || gridEl.contains(h)) continue;
       const t = (h.textContent || "").trim();
       const nt = normTxt(t);
-      if (t && !/hungstudy|1\.\s*hoc|2\.\s*tai|3\.\s*luyen|4\.\s*thi/.test(nt)) {
+      if (t && !/hungstudy|phong quan tri|1\.\s*hoc|2\.\s*tai|3\.\s*luyen|4\.\s*thi/.test(nt)) {
         return t;
       }
     }
@@ -2294,16 +2449,21 @@
     examCard.onclick = (e) => {
       e.preventDefault();
       e.stopPropagation();
-      openExamHub(courseKey, courseName);
+      openExamHub(courseKey, courseName, "student");
     };
 
     cardEl.insertAdjacentElement("afterend", examCard);
   }
 
- function bootExamInjector() {
-    preloadAllExams();
+  function tickInjectors() {
+    injectTeacherExamTab();
     injectCourseExamCard();
-    setInterval(injectCourseExamCard, 800);
+  }
+
+  function bootExamInjector() {
+    preloadAllExams();
+    tickInjectors();
+    setInterval(tickInjectors, 700);
   }
 
   if (document.readyState === "loading") {
